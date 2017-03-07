@@ -1,0 +1,15 @@
+*.swn
+*.swo
+*.swp
+.DS_Store
+.idea
+*.tgz
+bower_components
+config/deploy.json
+credentials.json
+dist
+node_modules
+npm-debug.log
+out
+docs
+deploy.json
