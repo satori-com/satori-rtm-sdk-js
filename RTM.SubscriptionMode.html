@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SubscriptionMode - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<header class="page-header" style="height: 60px">
+    <div
+        class="page-header-content"
+        style="align-items: center; display: flex; height: 60px; position: fixed;"
+    >
+        <a class="page-logo-link" href="https://www.satori.com" style="cursor: pointer;">
+            <img
+                alt="Satori"
+                class="page-logo-image"
+                height="30"
+                src="https://www.satori.com/assets/images/logo-light@2x.png"
+                width="177"
+            />
+        </a>
+    </div>
+</header>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Observer.html">Observer</a><ul class='methods'><li data-type='method'><a href="Observer.html#fire">fire</a></li><li data-type='method'><a href="Observer.html#off">off</a></li><li data-type='method'><a href="Observer.html#on">on</a></li></ul></li><li><a href="RTM.html">RTM</a><ul class='methods'><li data-type='method'><a href="RTM.html#.roleSecretAuthProvider">roleSecretAuthProvider</a></li><li data-type='method'><a href="RTM.html#delete">delete</a></li><li data-type='method'><a href="RTM.html#fire">fire</a></li><li data-type='method'><a href="RTM.html#getSubscription">getSubscription</a></li><li data-type='method'><a href="RTM.html#isConnected">isConnected</a></li><li data-type='method'><a href="RTM.html#isStopped">isStopped</a></li><li data-type='method'><a href="RTM.html#off">off</a></li><li data-type='method'><a href="RTM.html#on">on</a></li><li data-type='method'><a href="RTM.html#publish">publish</a></li><li data-type='method'><a href="RTM.html#read1">read</a></li><li data-type='method'><a href="RTM.html#read2">read</a></li><li data-type='method'><a href="RTM.html#restart">restart</a></li><li data-type='method'><a href="RTM.html#resubscribe">resubscribe</a></li><li data-type='method'><a href="RTM.html#search">search</a></li><li data-type='method'><a href="RTM.html#start">start</a></li><li data-type='method'><a href="RTM.html#stop">stop</a></li><li data-type='method'><a href="RTM.html#subscribe">subscribe</a></li><li data-type='method'><a href="RTM.html#unsubscribe">unsubscribe</a></li><li data-type='method'><a href="RTM.html#write">write</a></li></ul></li><li><a href="Subscription.html">Subscription</a><ul class='methods'><li data-type='method'><a href="Subscription.html#fire">fire</a></li><li data-type='method'><a href="Subscription.html#off">off</a></li><li data-type='method'><a href="Subscription.html#on">on</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="RTM.SubscriptionMode.html">SubscriptionMode</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">SubscriptionMode</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="RTM.html">RTM</a>.</span>
+        
+        SubscriptionMode
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Subscription modes.</p></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rtm.js.html">rtm.js</a>, <a href="rtm.js.html#line181">line 181</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".ADVANCED"><span class="type-signature">(static, constant) </span>ADVANCED<span class="type-signature"> :<a href="global.html#SubscriptionMode">SubscriptionMode</a></span></h4>
+
+
+
+
+<div class="description">
+    <p>The JavaScript SDK tracks the <code>position</code> parameter and always uses that value when
+resubscribing.</p>
+<p>If the stream position is expired when the SDK attempts to resubscribe, RTM
+sends an <code>expired_position</code> error and unsubscribes.</p>
+<p>If the application has
+a slow connection to RTM and cannot keep up with the channel message data sent from RTM,
+RTM sends an <code>out_of_sync</code> error and unsubscribes.</p>
+<p>For more information about the <code>expired_position</code> and <code>out_of_sync</code>
+errors, see <em>RTM API</em> in the online docs.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#SubscriptionMode">SubscriptionMode</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rtm.js.html">rtm.js</a>, <a href="rtm.js.html#line244">line 244</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".RELIABLE"><span class="type-signature">(static, constant) </span>RELIABLE<span class="type-signature"> :<a href="global.html#SubscriptionMode">SubscriptionMode</a></span></h4>
+
+
+
+
+<div class="description">
+    <p>The JavaScript SDK
+tracks the <code>position</code> parameter and attempts to use that value when
+resubscribing. If the <code>position</code> parameter is expired, RTM fast-forwards
+to the earliest possible <code>position</code> value.</p>
+<p>This option may result in missed messages if the application has a slow connection
+to RTM and cannot keep up with the channel message data sent from RTM.</p>
+<p>For more information about the fast-forward feature, see <em>RTM API</em> in the online docs.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#SubscriptionMode">SubscriptionMode</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rtm.js.html">rtm.js</a>, <a href="rtm.js.html#line198">line 198</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".SIMPLE"><span class="type-signature">(static, constant) </span>SIMPLE<span class="type-signature"> :<a href="global.html#SubscriptionMode">SubscriptionMode</a></span></h4>
+
+
+
+
+<div class="description">
+    <p>The JavaScript SDK does not track the <code>position</code> parameter received from RTM.
+Instead, when resubscribing following a reconnection, RTM fast-forwards to
+the earliest possible <code>position</code> parameter value.</p>
+<p>This option may result in missed messages during reconnection if the application has
+a slow connection to RTM and cannot keep up with the channel message stream sent from RTM.</p>
+<p>For more information about the fast-forward feature, see <em>RTM API</em> in the online docs.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#SubscriptionMode">SubscriptionMode</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rtm.js.html">rtm.js</a>, <a href="rtm.js.html#line219">line 219</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Mar 30 2017 16:18:36 GMT+0200 (CEST) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

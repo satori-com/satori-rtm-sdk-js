@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>map.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<header class="page-header" style="height: 60px">
+    <div
+        class="page-header-content"
+        style="align-items: center; display: flex; height: 60px; position: fixed;"
+    >
+        <a class="page-logo-link" href="https://www.satori.com" style="cursor: pointer;">
+            <img
+                alt="Satori"
+                class="page-logo-image"
+                height="30"
+                src="https://www.satori.com/assets/images/logo-light@2x.png"
+                width="177"
+            />
+        </a>
+    </div>
+</header>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Observer.html">Observer</a><ul class='methods'><li data-type='method'><a href="Observer.html#fire">fire</a></li><li data-type='method'><a href="Observer.html#off">off</a></li><li data-type='method'><a href="Observer.html#on">on</a></li></ul></li><li><a href="RTM.html">RTM</a><ul class='methods'><li data-type='method'><a href="RTM.html#.roleSecretAuthProvider">roleSecretAuthProvider</a></li><li data-type='method'><a href="RTM.html#delete">delete</a></li><li data-type='method'><a href="RTM.html#fire">fire</a></li><li data-type='method'><a href="RTM.html#getSubscription">getSubscription</a></li><li data-type='method'><a href="RTM.html#isConnected">isConnected</a></li><li data-type='method'><a href="RTM.html#isStopped">isStopped</a></li><li data-type='method'><a href="RTM.html#off">off</a></li><li data-type='method'><a href="RTM.html#on">on</a></li><li data-type='method'><a href="RTM.html#publish">publish</a></li><li data-type='method'><a href="RTM.html#read1">read</a></li><li data-type='method'><a href="RTM.html#read2">read</a></li><li data-type='method'><a href="RTM.html#restart">restart</a></li><li data-type='method'><a href="RTM.html#resubscribe">resubscribe</a></li><li data-type='method'><a href="RTM.html#search">search</a></li><li data-type='method'><a href="RTM.html#start">start</a></li><li data-type='method'><a href="RTM.html#stop">stop</a></li><li data-type='method'><a href="RTM.html#subscribe">subscribe</a></li><li data-type='method'><a href="RTM.html#unsubscribe">unsubscribe</a></li><li data-type='method'><a href="RTM.html#write">write</a></li></ul></li><li><a href="Subscription.html">Subscription</a><ul class='methods'><li data-type='method'><a href="Subscription.html#fire">fire</a></li><li data-type='method'><a href="Subscription.html#off">off</a></li><li data-type='method'><a href="Subscription.html#on">on</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="RTM.SubscriptionMode.html">SubscriptionMode</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">map.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var cMap;
+
+if (typeof (Map) !== 'undefined' &amp;&amp; 'forEach' in Map.prototype) {
+  module.exports = Map;
+} else {
+  cMap = function () {
+    this.storage = {
+      keys: [],
+      values: [],
+    };
+    this.size = 0;
+  };
+
+  /**
+   * Sets a value for the specified key.
+   *
+   * @param {string} key - Key value.
+   * @param {any} value - Stored value.
+   *
+   * @return {void}
+   */
+  cMap.prototype.set = function (key, value) {
+    var index = this._index(key);
+    if (index >= 0) {
+      this.storage.values[index] = value;
+    } else {
+      this.storage.keys.push(key);
+      this.storage.values.push(value);
+    }
+
+    this.size = this.storage.keys.length;
+  };
+
+  /**
+   * Gets the value for specified key
+   *
+   * @param {string} key - Key value.
+   *
+   * @return {any} if key exists; {undefined} otherwise.
+   */
+  cMap.prototype.get = function (key) {
+    var index = this._index(key);
+
+    return index >= 0 ? this.storage.values[index] : undefined;
+  };
+
+  /**
+   * Deletes the key and the associated key value.
+   *
+   * @param {string} key - Key value to delete.
+   *
+   * @return {void}
+   */
+  cMap.prototype.delete = function (key) {
+    var index = this._index(key);
+    if (index >= 0) {
+      this.storage.keys.splice(index, 1);
+      this.storage.values.splice(index, 1);
+    }
+
+    this.size = this.storage.keys.length;
+  };
+
+  /**
+   * Clears Map values.
+   *
+   * @return {void}
+   */
+  cMap.prototype.clear = function () {
+    this.storage.keys = [];
+    this.storage.values = [];
+
+    this.size = this.storage.keys.length;
+  };
+
+  cMap.prototype._index = function (key) {
+    return this.storage.keys.indexOf(key);
+  };
+
+  module.exports = cMap;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Mar 30 2017 16:18:36 GMT+0200 (CEST) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

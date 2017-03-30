@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Subscription - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<header class="page-header" style="height: 60px">
+    <div
+        class="page-header-content"
+        style="align-items: center; display: flex; height: 60px; position: fixed;"
+    >
+        <a class="page-logo-link" href="https://www.satori.com" style="cursor: pointer;">
+            <img
+                alt="Satori"
+                class="page-logo-image"
+                height="30"
+                src="https://www.satori.com/assets/images/logo-light@2x.png"
+                width="177"
+            />
+        </a>
+    </div>
+</header>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Observer.html">Observer</a><ul class='methods'><li data-type='method'><a href="Observer.html#fire">fire</a></li><li data-type='method'><a href="Observer.html#off">off</a></li><li data-type='method'><a href="Observer.html#on">on</a></li></ul></li><li><a href="RTM.html">RTM</a><ul class='methods'><li data-type='method'><a href="RTM.html#.roleSecretAuthProvider">roleSecretAuthProvider</a></li><li data-type='method'><a href="RTM.html#delete">delete</a></li><li data-type='method'><a href="RTM.html#fire">fire</a></li><li data-type='method'><a href="RTM.html#getSubscription">getSubscription</a></li><li data-type='method'><a href="RTM.html#isConnected">isConnected</a></li><li data-type='method'><a href="RTM.html#isStopped">isStopped</a></li><li data-type='method'><a href="RTM.html#off">off</a></li><li data-type='method'><a href="RTM.html#on">on</a></li><li data-type='method'><a href="RTM.html#publish">publish</a></li><li data-type='method'><a href="RTM.html#read1">read</a></li><li data-type='method'><a href="RTM.html#read2">read</a></li><li data-type='method'><a href="RTM.html#restart">restart</a></li><li data-type='method'><a href="RTM.html#resubscribe">resubscribe</a></li><li data-type='method'><a href="RTM.html#search">search</a></li><li data-type='method'><a href="RTM.html#start">start</a></li><li data-type='method'><a href="RTM.html#stop">stop</a></li><li data-type='method'><a href="RTM.html#subscribe">subscribe</a></li><li data-type='method'><a href="RTM.html#unsubscribe">unsubscribe</a></li><li data-type='method'><a href="RTM.html#write">write</a></li></ul></li><li><a href="Subscription.html">Subscription</a><ul class='methods'><li data-type='method'><a href="Subscription.html#fire">fire</a></li><li data-type='method'><a href="Subscription.html#off">off</a></li><li data-type='method'><a href="Subscription.html#on">on</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="RTM.SubscriptionMode.html">SubscriptionMode</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Subscription</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        Subscription
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+
+    <h4 class="name" id="Subscription"><span class="type-signature"></span>new Subscription<span class="signature">(subscriptionId, opts)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>The <code>Subscription</code> class manages the state and events of a
+subscription.</p>
+<p>You can use the <code>Subscription</code> class to define application functionality
+when specific events occur, like receiving a message, or when the subscription
+enters different subscription state machine state.</p>
+<p>When the application receives a message as subscription data, the <code>data</code>
+event occurs and the received message is passed, as a Protocol Data Unit (PDU),
+to the <code>fn</code> parameter of the
+<a href="Subscription.html#on"><code>Subscription.on(event, fn)</code></a> event handler method.</p>
+<p>Use the <a href="Subscription.html#on"><code>Subscription.on(event, fn)</code></a> method to add an
+event handler to the subscription, which 'fires' when the subscription
+receives a published message. The event parameter in this method can take a
+value of <code>data</code> or the value of the action element of the PDU,
+for example, <code>rtm/subscription/data</code>.</p>
+<p>You can also set event handlers when the subscription enters or leaves
+a state in the subscription state machine. A subscription can be in
+one of the following states: <code>subscribing</code>, <code>subscribed</code>,
+<code>unsubscribing</code>, <code>unsubscribed</code>, or <code>failed</code>.</p>
+<p>See
+<strong>State Machines</strong> in the online docs.</p>
+<p><strong>Note:</strong> When the connection from the RTM client to
+RTM drops, all subscriptions are unsubscribed, and then resubscribed
+when the connection is restored. You can direct the JavaScript SDK to automatically
+reconnect or you can detect the disconnect manually and then reconnect to
+RTM at the proper message stream position with the
+<code>position</code> parameter.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subscriptionId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>String that identifies the channel. If you do not
+use the <code>filter</code> parameter, it is the channel name. Otherwise,
+it is a unique identifier for the channel (subscription id).</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Additional subscription options.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>mode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Sets subscription mode. Can be <code>SIMPLE</code>, <code>RELIABLE</code>, or
+<code>ADVANCED</code>.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bodyOpts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last"><p>Additional subscription options for a channel subscription. These options
+are sent to RTM in the <code>body</code> element of the PDU that represents the subscribe
+request.</p>
+<p>For more information about the <code>body</code> element of a PDU,
+see <em>RTM API</em> in the online docs.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="subscription.js.html">subscription.js</a>, <a href="subscription.js.html#line82">line 82</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        <p><code>TypeError</code> indicates that mandatory
+parameters are missing or invalid.</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">TypeError</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// create a new subscription to the 'your-channel' channel
+var subscription = rtm.subscribe('your-channel');
+
+
+subscription.on('rtm/subscription/data', function (pdu) {
+    pdu.body.messages.forEach(console.log);
+});
+subscription.on('enter-subscribed', function () {
+    rtm.publish('your-channel', {type: 'init'});
+});
+subscription.on('data', function (pdu) {
+    if (pdu.action.endWith('/error')) {
+        rtm.restart();
+    }
+});</code></pre>
+
+
+
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="Observer.html">Observer</a></li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="fire"><span class="type-signature"></span>fire<span class="signature">(name)</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Executes all handlers attached to the given event type.</p>
+<p>The event <code>name</code> is one of the client or subscription state machine events,
+for example, <code>data</code> or <code>enter-connected</code>
+for the <a href="RTM.html"><code>RTM</code></a> client or <code>enter-subscribed</code> for a
+<a href="Subscription.html"><code>Subscription</code></a> object.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event name.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Observer.html#fire">Observer#fire</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line76">line 76</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="off"><span class="type-signature"></span>off<span class="signature">(name, fn)</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Removes an event handler.</p>
+<p>The event <code>name</code> is one of the client or
+subscription state machine events,
+for example, <code>data</code> or <code>enter-connected</code>
+for the <a href="RTM.html"><code>RTM</code></a> client or <code>enter-subscribed</code> for a
+<a href="Subscription.html"><code>Subscription</code></a> object.</p>
+<p>The Protocol Data Unit (PDU) for the event is passed to the
+<code>fn</code> function parameter.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event name.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event handler function.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Observer.html#off">Observer#off</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line55">line 55</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="on"><span class="type-signature"></span>on<span class="signature">(name, fn)</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Attaches an event handler function for named event.</p>
+<p>The event <code>name</code> is one of the client or
+subscription state machine events,
+for example, <code>data</code> or <code>enter-connected</code>
+for the <a href="RTM.html"><code>RTM</code></a> client or <code>enter-subscribed</code> for a
+<a href="Subscription.html"><code>Subscription</code></a> object.</p>
+<p>The Protocol Data Unit (PDU) for the event is passed to the
+<code>fn</code> function parameter.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event name.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event handler function.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Observer.html#on">Observer#on</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line30">line 30</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Mar 30 2017 16:18:36 GMT+0200 (CEST) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
