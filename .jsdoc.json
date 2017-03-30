@@ -6,7 +6,7 @@
     "source": {
         "include": ["src", "package.json", "README.md"],
         "includePattern": ".js$",
-        "excludePattern": "(node_modules/|docs|__tests__/)"
+        "excludePattern": "(node_modules/|docs|__docs__|__tests__/)"
     },
     "plugins": [
         "plugins/markdown"
@@ -15,7 +15,7 @@
         "cleverLinks": false,
         "monospaceLinks": true,
         "default": {
-          "layoutFile": "./node_modules/minami/tmpl/layout.tmpl"
+          "layoutFile": "src/__docs__/layout.tmpl"
         }
     },
     "opts": {
