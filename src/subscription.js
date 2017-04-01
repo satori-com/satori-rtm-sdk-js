@@ -160,10 +160,6 @@ Subscription.prototype.onDisconnect = function () {
   this._markAsUnsubscribed();
 };
 
-Subscription.prototype.isAutoReconnect = function () {
-  return this.options.autoReconnect;
-};
-
 Subscription.prototype._onPosition = function (position) {
   if (this.options.trackPosition) {
     this.position = position;

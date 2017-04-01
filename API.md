@@ -847,5 +847,4 @@ for the [RTM](#RTM) client or <code>enter-subscribed</code> for a
 | --- | --- | --- |
 | trackPosition | <code>boolean</code> | Tracks the stream position received from RTM. RTM includes the <code>position</code> parameter in responses to publish and subscribe requests and in subscription data messages. The SDK can attempt to resubscribe to the channel data stream from this position. |
 | fastForward | <code>boolean</code> | RTM fast-forwards the subscription when the SDK resubscribes to a channel. |
-| autoReconnect | <code>boolean</code> | Resubscribes to a previously subscribed channel after reconnecting to RTM. |
 

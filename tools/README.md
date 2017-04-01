@@ -19,7 +19,6 @@ send> {"id":1,"action":"rtm/subscribe","body":{"channel":"test","fast_forward":t
   options:
    { trackNext: false,
      fastForward: true,
-     autoReconnect: true,
      bodyOpts: { fast_forward: true } },
   next: null,
   channel: 'test',

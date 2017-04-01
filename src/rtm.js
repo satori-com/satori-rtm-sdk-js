@@ -166,9 +166,6 @@ RTM.logger = logger;
  *
  * @property {boolean} fastForward
  * RTM fast-forwards the subscription when the SDK resubscribes to a channel.
- *
- * @property {boolean} autoReconnect
- * Resubscribes to a previously subscribed channel after reconnecting to RTM.
  */
 
 /**
@@ -198,7 +195,6 @@ RTM.SubscriptionMode = {
   RELIABLE: {
     trackPosition: true,
     fastForward: true,
-    autoReconnect: true,
   },
 
   /**
@@ -219,7 +215,6 @@ RTM.SubscriptionMode = {
   SIMPLE: {
     trackPosition: false,
     fastForward: true,
-    autoReconnect: true,
   },
 
   /**
@@ -244,7 +239,6 @@ RTM.SubscriptionMode = {
   ADVANCED: {
     trackPosition: true,
     fastForward: false,
-    autoReconnect: true,
   },
 };
 
@@ -453,7 +447,7 @@ RTM.prototype.subscribe = function (channelOrSubId, mode, bodyOpts) {
   var subscription;
   var pdu;
   var opts;
-  var modeMandatoryKeys = ['fastForward', 'autoReconnect', 'trackPosition'];
+  var modeMandatoryKeys = ['fastForward', 'trackPosition'];
 
   if (typeof channelOrSubId !== 'string') {
     throw new TypeError('"channelOrSubId" is missing or invalid');
@@ -1006,12 +1000,8 @@ RTM.prototype._subscribeAll = function () {
 };
 
 RTM.prototype._disconnectAll = function () {
-  var self = this;
   this._forEachSubscription(function (subscriptionId, subscription) {
     subscription.onDisconnect();
-    if (!subscription.isAutoReconnect()) {
-      self.unsubscribe(subscriptionId);
-    }
   });
 };
 

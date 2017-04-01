@@ -5,7 +5,6 @@ jest.useRealTimers();
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 
 var RTM = require('../rtm.js');
-var objectAssign = require('object-assign');
 var h = require('./helper.js');
 
 describe('real subscription', function () {
@@ -186,27 +185,6 @@ describe('real subscription', function () {
 
     p.addCheck(function (msg) {
       expect(msg).toEqual({ foo: 'bar' });
-    });
-    p.whenCompleted(done);
-
-    rtm.start();
-  });
-
-  it('removes subscription without autoReconnect after fail', function (done) {
-    var rtm = h.rtm();
-
-    var mode = objectAssign(RTM.SubscriptionMode.ADVANCED, { autoReconnect: false });
-    rtm.subscribe(subscriptionId, mode);
-    rtm.on('enter-connected', p.doCheck.bind(this, 'enter-connected'));
-
-    p.addCheck(function (msg) {
-      expect(msg).toBe('enter-connected');
-      rtm.publish(subscriptionId, 'emulate-disconnect');
-      expect(rtm.getSubscription(subscriptionId)).not.toBe(undefined);
-    });
-    p.addCheck(function (msg) {
-      expect(msg).toBe('enter-connected');
-      expect(rtm.getSubscription(subscriptionId)).toBe(undefined);
     });
     p.whenCompleted(done);
 
