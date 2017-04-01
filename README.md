@@ -10,8 +10,8 @@ Use the JavaScript SDK for the Satori platform to create browser-based applicati
 To use the JavaScript SDK from a browser-based application, include the SDK from the CDN and create an RTM client instance:
 
 ```HTML
-<script src="https://satori-a.akamaihd.net/satori-sdk-js/v1.0.0/sdk.min.js"></script>
-<script src="https://satori-a.akamaihd.net/satori-sdk-js/v1.0.0/sdk.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-sdk-js/v1.0.1/sdk.min.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-sdk-js/v1.0.1/sdk.js"></script>
 ```
 and then
 
@@ -84,7 +84,7 @@ The `credentials.json` file must include the following key-value pairs:
 
 ```
 {
-  "endpoint": "ws://<RTM_HOST>/",
+  "endpoint": "wss://<SATORI_HOST>/",
   "appkey": "<APP KEY>",
   "superuser_role_secret": "<ROLE SECRET KEY>"
 }

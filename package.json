@@ -1,6 +1,6 @@
 {
   "name": "satori-sdk-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JavaScript SDK for Satori Platform",
   "repository": {
     "type": "git",
