@@ -10,11 +10,11 @@ rtm.on('enter-connected', function () {
 });
 
 var groupBySub = rtm.subscribe('group_by', RTM.SubscriptionMode.SIMPLE, {
-  filter: 'SELECT a, MAX(b) FROM mychannel GROUP BY a'
+  filter: 'SELECT a, MAX(b) FROM mychannel GROUP BY a',
 });
 
 var allSub = rtm.subscribe('all', RTM.SubscriptionMode.SIMPLE, {
-  filter: 'SELECT * FROM mychannel'
+  filter: 'SELECT * FROM mychannel',
 });
 
 [groupBySub, allSub].forEach(function (channel) {

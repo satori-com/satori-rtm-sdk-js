@@ -10,7 +10,7 @@ rtm.on('enter-connected', function () {
 });
 
 var channel = rtm.subscribe('channel', RTM.SubscriptionMode.SIMPLE, {
-  history: { age: 60 /* seconds */ }
+  history: { age: 60 /* seconds */ },
 });
 
 /* set callback for state transition */

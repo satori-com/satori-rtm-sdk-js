@@ -10,13 +10,13 @@ rtm.on('enter-connected', function () {
 });
 
 var channel = rtm.subscribe('group_by', RTM.SubscriptionMode.SIMPLE, {
-  filter: 'SELECT a, MAX(b) FROM mychannel GROUP BY a'
+  filter: 'SELECT a, MAX(b) FROM mychannel GROUP BY a',
 });
 
 /* set callback for state transition */
 channel.on('enter-subscribed', function () {
   console.log('Subscribed to: ' + channel.subscriptionId);
-  rtm.publish('mychannel', {a: 1, b:2});
+  rtm.publish('mychannel', { a: 1, b: 2 });
 });
 
 /* set callback for PDU with specific action */

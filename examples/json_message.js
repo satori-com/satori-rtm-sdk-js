@@ -12,7 +12,7 @@ rtm.on('enter-connected', function () {
 var channel = rtm.subscribe('mychannel', RTM.SubscriptionMode.SIMPLE);
 
 channel.on('enter-subscribed', function () {
-  rtm.publish('mychannel', {name: 'Mike', age: 19});
+  rtm.publish('mychannel', { name: 'Mike', age: 19 });
 });
 
 /* set callback for PDU with specific action */

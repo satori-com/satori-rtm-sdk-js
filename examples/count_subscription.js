@@ -10,7 +10,7 @@ rtm.on('enter-connected', function () {
 });
 
 var channel = rtm.subscribe('channel', RTM.SubscriptionMode.SIMPLE, {
-  history: { count: 10 }
+  history: { count: 10 },
 });
 
 /* set callback for state transition */

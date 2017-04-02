@@ -19,7 +19,7 @@ channel.on('enter-subscribed', function () {
 /* set callback for PDU with specific action */
 channel.on('rtm/subscription/data', function (pdu) {
   pdu.body.messages.forEach(function (user) {
-    console.log('Got message: ' + msg);
+    console.log('Got message: ' + user);
   });
 });
 
