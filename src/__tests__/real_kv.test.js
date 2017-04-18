@@ -123,7 +123,7 @@ describe('real key-value storage', function () {
     rtm.start();
   });
 
-  it('searches channels', function (done) {
+  xit('searches channels', function (done) {
     var rtm = h.rtm();
     var channels = [];
 
