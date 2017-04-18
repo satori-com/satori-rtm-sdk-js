@@ -1,3 +1,6 @@
+-------------------
+* Bump ws to 1.1.4
+
 v1.0.1 (2017-04-01)
 -------------------
 * Always auto-resubscribe all subs after reconnect
