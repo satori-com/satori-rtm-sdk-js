@@ -1,9 +1,14 @@
 /* eslint-disable no-console */
 
 var hasConsole = console && console.log;
+var debugMode = false;
+
+if (typeof process !== 'undefined' && 'DEBUG_SATORI_SDK' in process.env) {
+  debugMode = process.env['DEBUG_SATORI_SDK'].toLowerCase() === 'true';
+}
 
 var logger = {
-  DEBUG: false,
+  DEBUG: debugMode,
   error: function (error) {
     if (hasConsole) {
       console.log.apply(console, arguments);
