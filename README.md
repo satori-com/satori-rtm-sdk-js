@@ -1,9 +1,11 @@
 JavaScript SDK for Satori Platform
-==========
+=============================================
 
 Use the JavaScript SDK for the Satori platform to create browser-based applications or server-based applications running within Node.js. The applications use the RTM to publish and subscribe.
 
-## JavaScript SDK Installation
+
+JavaScript SDK Installation
+---------------------------------------------------------------------
 
 ### Browser Installation
 
@@ -43,7 +45,9 @@ var rtm = new RTMClient("your-endpoint", "your-appkey");
 
 **Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Developer Portal.
 
-# JavaScript Sample Code
+
+JavaScript Sample Code
+---------------------------------------------------------------------
 
 ```JavaScript
 // create a new subscription with "your-channel" name
@@ -72,11 +76,22 @@ rtm.on("data", function(pdu) {
 rtm.start();
 ```
 
-# Documentation
+Documentation
+---------------------------------------------------------------------
 
 You can view the latest JavaScript SDK documentation [here](./API.md).
 
-### Testing Your Changes
+#### Generating API docs
+
+```bash
+$ npm run docs
+```
+
+The generated API documentation will apear in the `./docs` folder.
+
+
+Testing Your Changes
+---------------------------------------------------------------------
 
 Tests require an active RTM Service to be available. The tests require `credentials.json` to be populated with the RTM Service properties.
 
@@ -96,17 +111,36 @@ The `credentials.json` file must include the following key-value pairs:
 
 After setting up `credentials.json`, just type `npm test` at the command line.
 
-### Assembling from sources
 
-* git clone https://github.com/satori-com/satori-sdk-js.git
-* cd satori-sdk-js
-* npm install
-* npm run build
+Assembling from sources
+---------------------------------------------------------------------
+
+```bash
+$ git clone https://github.com/satori-com/satori-sdk-js.git
+$ cd satori-sdk-js
+$ npm install
+$ npm run build
+```
 
 The assembled JS output will appear in the `./dist/` directory.
 
-### Generating API docs
 
-* npm run docs
+Verbose logging of all incoming and outcoming PDUs
+---------------------------------------------------------------------
 
-The generated API documentation will apear in the `./docs` folder.
+You can enable dumping of all PDUs either from your code
+
+```JavaScript
+var RTMClient = require("satori-sdk-js");
+RTMClient.logger.DEBUG = true;
+
+// create an RTM client instance
+var rtm = new RTMClient("your-endpoint", "your-appkey");
+```
+
+or by setting DEBUG_SATORI_SDK environment variable prior to running your application
+
+```JavaScript
+$ export DEBUG_SATORI_SDK=true
+$ node myapp.js
+```
