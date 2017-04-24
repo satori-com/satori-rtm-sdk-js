@@ -1,5 +1,6 @@
 -------------------
 * Bump ws to 1.1.4
+* Add processing of DEBUG_SATORI_SDK flag to enable logging of all incoming and outcoming PDUs
 
 v1.0.1 (2017-04-01)
 -------------------
