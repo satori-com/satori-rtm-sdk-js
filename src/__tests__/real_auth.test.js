@@ -19,7 +19,7 @@ describe('real auth', function () {
   });
 
   it('authenticates successfully with superuser role', function (done) {
-    var roleSecretProvider = RTM.roleSecretAuthProvider('superuser', h.config.superuser_role_secret);
+    var roleSecretProvider = RTM.roleSecretAuthProvider(h.config.auth_role_name, h.config.auth_role_secret_key);
 
     var client = h.rtm(h.config.endpoint, h.config.appkey, {
       authProvider: roleSecretProvider,
@@ -35,7 +35,7 @@ describe('real auth', function () {
   });
 
   it('authenticates unsuccessfully with incorrect key', function (done) {
-    var roleSecretProvider = RTM.roleSecretAuthProvider('superuser', 'bad_key');
+    var roleSecretProvider = RTM.roleSecretAuthProvider(h.config.auth_role_name, 'bad_key');
     var client = h.rtm(h.config.endpoint, h.config.appkey, {
       authProvider: roleSecretProvider,
     });
