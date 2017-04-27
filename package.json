@@ -18,6 +18,7 @@
     "SDK"
   ],
   "main": "src/rtm.js",
+  "types": "src/rtm.d.ts",
   "scripts": {
     "deploy": "gulp deploy",
     "build": "gulp build",
