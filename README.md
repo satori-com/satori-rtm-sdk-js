@@ -100,14 +100,18 @@ The `credentials.json` file must include the following key-value pairs:
 ```
 {
   "endpoint": "wss://<SATORI_HOST>/",
-  "appkey": "<APP KEY>",
-  "superuser_role_secret": "<ROLE SECRET KEY>"
+  "appkey": "<APP_KEY>",
+  "auth_role_name": "<ROLE_NAME>",
+  "auth_role_secret_key": "<ROLE_SECRET_KEY>",
+  "auth_restricted_channel": "<CHANNEL_NAME>"
 }
 ```
 
-* `endpoint` is your customer-specific DNS name for RTM Service access.
+* `endpoint` is your customer-specific DNS name for RTM access.
 * `appkey` is your application key.
-* `superuser_role_secret` is a role secret key for a role named `superuser`.
+* `auth_role_name` is a role name that permits to publish / subscribe to `auth_restricted_channel`. Must be not `default`.
+* `auth_role_secret_key` is a secret key for `auth_role_name`.
+* `auth_restricted_channel` is a channel with subscribe and publish access for `auth_role_name` role only.
 
 After setting up `credentials.json`, just type `npm test` at the command line.
 
