@@ -85,10 +85,10 @@ The `credentials.json` file must include the following key-value pairs:
 ```
 {
   "endpoint": "wss://<SATORI_HOST>/",
-  "appkey": "<APP KEY>",
-  "auth_role_name": "<ROLE NAME>",
-  "auth_role_secret_key": "<ROLE SECRET KEY>",
-  "auth_restricted_channel": "<CHANNEL NAME>"
+  "appkey": "<APP_KEY>",
+  "auth_role_name": "<ROLE_NAME>",
+  "auth_role_secret_key": "<ROLE_SECRET_KEY>",
+  "auth_restricted_channel": "<CHANNEL_NAME>"
 }
 ```
 

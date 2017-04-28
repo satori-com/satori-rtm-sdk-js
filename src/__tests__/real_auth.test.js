@@ -18,7 +18,7 @@ describe('real auth', function () {
     h.teardown();
   });
 
-  it('authenticates successfully with superuser role', function (done) {
+  it('authenticates successfully with role', function (done) {
     var roleSecretProvider = RTM.roleSecretAuthProvider(h.config.auth_role_name, h.config.auth_role_secret_key);
 
     var client = h.rtm(h.config.endpoint, h.config.appkey, {
