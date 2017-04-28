@@ -17,7 +17,7 @@ Examples:
 send> {"id":1,"action":"rtm/subscribe","body":{"channel":"test","fast_forward":true}}
 { handlers: {},
   options:
-   { trackNext: false,
+   { trackPosition: false,
      fastForward: true,
      bodyOpts: { fast_forward: true } },
   next: null,
