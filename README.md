@@ -1,7 +1,7 @@
-JavaScript SDK for Satori Platform
+JavaScript SDK for Satori RTM
 =============================================
 
-Use the JavaScript SDK for the Satori platform to create browser-based applications or server-based applications running within Node.js. The applications use the RTM to publish and subscribe.
+Use the JavaScript SDK for the Satori RTM to create browser-based applications or server-based applications running within Node.js. The applications use the RTM to publish and subscribe.
 
 
 JavaScript SDK Installation
