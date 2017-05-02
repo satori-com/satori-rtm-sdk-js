@@ -19,7 +19,8 @@ describe('real auth', function () {
   });
 
   it('authenticates successfully with role', function (done) {
-    var roleSecretProvider = RTM.roleSecretAuthProvider(h.config.auth_role_name, h.config.auth_role_secret_key);
+    var roleSecretProvider = RTM.roleSecretAuthProvider(h.config.auth_role_name,
+      h.config.auth_role_secret_key);
 
     var client = h.rtm(h.config.endpoint, h.config.appkey, {
       authProvider: roleSecretProvider,
