@@ -1,5 +1,5 @@
 {
-  "name": "satori-sdk-js",
+  "name": "satori-rtm-sdk",
   "version": "1.0.1",
   "description": "JavaScript SDK for Satori Platform",
   "repository": {

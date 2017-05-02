@@ -1153,8 +1153,8 @@ RTM.prototype._appendVersion = function (ep) {
   if (versionMatch !== null) {
     ver = versionMatch[1];
     logger.warn(
-        'satori-sdk-js: specifying RTM endpoint with protocol version is deprecated.\n' +
-        'satori-sdk-js: please remove version \'' + ver + '\' from endpoint:\'' + ep + '\''
+        'satori-rtm-sdk: specifying RTM endpoint with protocol version is deprecated.\n' +
+        'satori-rtm-sdk: please remove version \'' + ver + '\' from endpoint:\'' + ep + '\''
     );
     return ret;
   }

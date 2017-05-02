@@ -1,4 +1,4 @@
-declare module 'satori-sdk-js' {
+declare module 'satori-rtm-sdk' {
   export = RTM;
 
   type OnAck = (pdu: PDU) => void;
