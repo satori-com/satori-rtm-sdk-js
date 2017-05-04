@@ -65,24 +65,24 @@
 
 
     <section class="readme">
-        <article><h1>JavaScript SDK for Satori Platform</h1><p>Use the JavaScript SDK for the Satori platform to create browser-based applications or server-based applications running within Node.js. The applications use the RTM to publish and subscribe.</p>
+        <article><h1>JavaScript SDK for Satori RTM</h1><p>Use the JavaScript SDK for the Satori RTM to create browser-based applications or server-based applications running within Node.js. The applications use the RTM to publish and subscribe.</p>
 <h2>JavaScript SDK Installation</h2><h3>Browser Installation</h3><p>To use the JavaScript SDK from a browser-based application, include the SDK from the CDN and create an RTM client instance:</p>
-<pre class="prettyprint source lang-HTML"><code>&lt;script src=&quot;https://satori-a.akamaihd.net/satori-sdk-js/v1.0.1/sdk.min.js&quot;>&lt;/script>
-&lt;script src=&quot;https://satori-a.akamaihd.net/satori-sdk-js/v1.0.1/sdk.js&quot;>&lt;/script></code></pre><p>and then</p>
+<pre class="prettyprint source lang-HTML"><code>&lt;script src=&quot;https://satori-a.akamaihd.net/satori-rtm-sdk/v1.0.2/sdk.min.js&quot;>&lt;/script>
+&lt;script src=&quot;https://satori-a.akamaihd.net/satori-rtm-sdk/v1.0.2/sdk.js&quot;>&lt;/script></code></pre><p>and then</p>
 <pre class="prettyprint source lang-JavaScript"><code>// create an RTM client instance
 var rtm = new RTM(&quot;your-endpoint&quot;, &quot;your-appkey&quot;);</code></pre><p>Where <code>sdk.min.js</code> is the minified version and <code>sdk.js</code> is the full version. For the rest of the code, see <a href="#code">Sample Code</a>.</p>
 <p><strong>Note</strong>: You can find the application key and endpoint on the <strong>Appkey Info</strong> page for your app in the Developer Portal.</p>
 <h3>Node.js Installation</h3><ol>
 <li>Install the JavaScript SDK with the following command from NPM:</li>
 </ol>
-<pre class="prettyprint source"><code>npm install 'satori-sdk-js'</code></pre><ol>
+<pre class="prettyprint source"><code>npm install 'satori-rtm-sdk'</code></pre><ol>
 <li>In your application file <code>&lt;app_name&gt;.js</code>, use the following code to create an RTM client instance:</li>
 </ol>
-<pre class="prettyprint source lang-JavaScript"><code>var RTMClient = require(&quot;satori-sdk-js&quot;);
+<pre class="prettyprint source lang-JavaScript"><code>var RTMClient = require(&quot;satori-rtm-sdk&quot;);
 
 // create an RTM client instance
 var rtm = new RTMClient(&quot;your-endpoint&quot;, &quot;your-appkey&quot;);</code></pre><p><strong>Note</strong>: You can find the application key and endpoint on the <strong>Appkey Info</strong> page for your app in the Developer Portal.</p>
-<h1>JavaScript Sample Code</h1><pre class="prettyprint source lang-JavaScript"><code>// create a new subscription with &quot;your-channel&quot; name
+<h2>JavaScript Sample Code</h2><pre class="prettyprint source lang-JavaScript"><code>// create a new subscription with &quot;your-channel&quot; name
 var channel = rtm.subscribe(&quot;your-channel&quot;, RTM.SubscriptionMode.SIMPLE);
 
 // add channel data handlers
@@ -105,30 +105,36 @@ rtm.on(&quot;data&quot;, function(pdu) {
 });
 
 // start the client
-rtm.start();</code></pre><h1>Documentation</h1><p>You can view the latest JavaScript SDK documentation <a href="./API.md">here</a>.</p>
-<h3>Testing Your Changes</h3><p>Tests require an active RTM Service to be available. The tests require <code>credentials.json</code> to be populated with the RTM Service properties.</p>
+rtm.start();</code></pre><h2>Documentation</h2><p>You can view the latest JavaScript SDK documentation <a href="./API.md">here</a>.</p>
+<h4>Generating API docs</h4><pre class="prettyprint source lang-bash"><code>$ npm run docs</code></pre><p>The generated API documentation will apear in the <code>./docs</code> folder.</p>
+<h2>Testing Your Changes</h2><p>Tests require an active RTM Service to be available. The tests require <code>credentials.json</code> to be populated with the RTM Service properties.</p>
 <p>The <code>credentials.json</code> file must include the following key-value pairs:</p>
 <pre class="prettyprint source"><code>{
   &quot;endpoint&quot;: &quot;wss://&lt;SATORI_HOST>/&quot;,
-  &quot;appkey&quot;: &quot;&lt;APP KEY>&quot;,
-  &quot;superuser_role_secret&quot;: &quot;&lt;ROLE SECRET KEY>&quot;
+  &quot;appkey&quot;: &quot;&lt;APP_KEY>&quot;,
+  &quot;auth_role_name&quot;: &quot;&lt;ROLE_NAME>&quot;,
+  &quot;auth_role_secret_key&quot;: &quot;&lt;ROLE_SECRET_KEY>&quot;,
+  &quot;auth_restricted_channel&quot;: &quot;&lt;CHANNEL_NAME>&quot;
 }</code></pre><ul>
-<li><code>endpoint</code> is your customer-specific DNS name for RTM Service access.</li>
+<li><code>endpoint</code> is your customer-specific DNS name for RTM access.</li>
 <li><code>appkey</code> is your application key.</li>
-<li><code>superuser_role_secret</code> is a role secret key for a role named <code>superuser</code>.</li>
+<li><code>auth_role_name</code> is a role name that permits to publish / subscribe to <code>auth_restricted_channel</code>. Must be not <code>default</code>.</li>
+<li><code>auth_role_secret_key</code> is a secret key for <code>auth_role_name</code>.</li>
+<li><code>auth_restricted_channel</code> is a channel with subscribe and publish access for <code>auth_role_name</code> role only.</li>
 </ul>
 <p>After setting up <code>credentials.json</code>, just type <code>npm test</code> at the command line.</p>
-<h3>Assembling from sources</h3><ul>
-<li>git clone https://github.com/satori-com/satori-sdk-js.git</li>
-<li>cd satori-sdk-js</li>
-<li>npm install</li>
-<li>npm run build</li>
-</ul>
-<p>The assembled JS output will appear in the <code>./dist/</code> directory.</p>
-<h3>Generating API docs</h3><ul>
-<li>npm run docs</li>
-</ul>
-<p>The generated API documentation will apear in the <code>./docs</code> folder.</p></article>
+<h2>Assembling from sources</h2><pre class="prettyprint source lang-bash"><code>$ git clone https://github.com/satori-com/satori-rtm-sdk-js.git
+$ cd satori-rtm-sdk
+$ npm install
+$ npm run build</code></pre><p>The assembled JS output will appear in the <code>./dist/</code> directory.</p>
+<h2>Verbose logging of all incoming and outcoming PDUs</h2><p>You can enable dumping of all PDUs either from your code</p>
+<pre class="prettyprint source lang-JavaScript"><code>var RTMClient = require(&quot;satori-rtm-sdk&quot;);
+RTMClient.logger.DEBUG = true;
+
+// create an RTM client instance
+var rtm = new RTMClient(&quot;your-endpoint&quot;, &quot;your-appkey&quot;);</code></pre><p>or by setting DEBUG_SATORI_SDK environment variable prior to running your application</p>
+<pre class="prettyprint source lang-JavaScript"><code>$ export DEBUG_SATORI_SDK=true
+$ node myapp.js</code></pre></article>
     </section>
 
 
@@ -141,7 +147,7 @@ rtm.start();</code></pre><h1>Documentation</h1><p>You can view the latest JavaSc
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Sat Apr 01 2017 21:02:19 GMT+0200 (CEST) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu May 04 2017 16:53:29 GMT+0200 (CEST) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
