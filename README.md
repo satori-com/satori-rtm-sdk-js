@@ -1,7 +1,7 @@
-JavaScript SDK for Satori Platform
+JavaScript SDK for Satori RTM
 =============================================
 
-Use the JavaScript SDK for the Satori platform to create browser-based applications or server-based applications running within Node.js. The applications use the RTM to publish and subscribe.
+Use the JavaScript SDK for the Satori RTM to create browser-based applications or server-based applications running within Node.js. The applications use the RTM to publish and subscribe.
 
 
 JavaScript SDK Installation
@@ -12,8 +12,8 @@ JavaScript SDK Installation
 To use the JavaScript SDK from a browser-based application, include the SDK from the CDN and create an RTM client instance:
 
 ```HTML
-<script src="https://satori-a.akamaihd.net/satori-sdk-js/v1.0.1/sdk.min.js"></script>
-<script src="https://satori-a.akamaihd.net/satori-sdk-js/v1.0.1/sdk.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.0.1/sdk.min.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.0.1/sdk.js"></script>
 ```
 and then
 
@@ -31,13 +31,13 @@ Where `sdk.min.js` is the minified version and `sdk.js` is the full version. For
 1. Install the JavaScript SDK with the following command from NPM:
 
 ```
-npm install 'satori-sdk-js'
+npm install 'satori-rtm-sdk'
 ```
 
 2. In your application file `<app_name>.js`, use the following code to create an RTM client instance:
 
 ```JavaScript
-var RTMClient = require("satori-sdk-js");
+var RTMClient = require("satori-rtm-sdk");
 
 // create an RTM client instance
 var rtm = new RTMClient("your-endpoint", "your-appkey");
@@ -120,8 +120,8 @@ Assembling from sources
 ---------------------------------------------------------------------
 
 ```bash
-$ git clone https://github.com/satori-com/satori-sdk-js.git
-$ cd satori-sdk-js
+$ git clone https://github.com/satori-com/satori-rtm-sdk-js.git
+$ cd satori-rtm-sdk
 $ npm install
 $ npm run build
 ```
@@ -135,7 +135,7 @@ Verbose logging of all incoming and outcoming PDUs
 You can enable dumping of all PDUs either from your code
 
 ```JavaScript
-var RTMClient = require("satori-sdk-js");
+var RTMClient = require("satori-rtm-sdk");
 RTMClient.logger.DEBUG = true;
 
 // create an RTM client instance
