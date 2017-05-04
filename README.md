@@ -120,7 +120,7 @@ Assembling from sources
 ---------------------------------------------------------------------
 
 ```bash
-$ git clone https://github.com/satori-com/satori-sdk-js.git
+$ git clone https://github.com/satori-com/satori-rtm-sdk-js.git
 $ cd satori-rtm-sdk
 $ npm install
 $ npm run build
