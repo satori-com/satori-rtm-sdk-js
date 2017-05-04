@@ -1,6 +1,6 @@
 {
   "name": "satori-rtm-sdk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "JavaScript SDK for Satori RTM",
   "repository": {
     "type": "git",
