@@ -70,14 +70,25 @@ Observer.prototype = {
    * [Subscription]{@link Subscription} object.
    *
    * @param {string} name - Event name.
+   * @param {...Object} args - Event arguments.
    *
    * @return {void}
    */
-  fire: function (name) {
-    var col = this.handlers[name] || [];
-    var args = Array.prototype.slice.call(arguments);
-    args.shift();
-    col.forEach(function (fn) {
+  fire: function () {
+    var name;
+    var fns;
+    var i;
+    var len = arguments.length;
+    // Copy arguments to solve 'Not optimized: Bad value context for arguments value'
+    // See https://github.com/GoogleChrome/devtools-docs/issues/53#issuecomment-51941358
+    var args = new Array(len);
+    for (i = 0; i < len; i += 1) {
+      args[i] = arguments[i];
+    }
+    name = args.shift();
+
+    fns = this.handlers[name] || [];
+    fns.forEach(function (fn) {
       try {
         fn.apply(null, args);
       } catch (e) {
