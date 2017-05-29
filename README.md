@@ -37,10 +37,10 @@ npm install 'satori-rtm-sdk'
 2. In your application file `<app_name>.js`, use the following code to create an RTM client instance:
 
 ```JavaScript
-var RTMClient = require("satori-rtm-sdk");
+var RTM = require("satori-rtm-sdk");
 
 // create an RTM client instance
-var rtm = new RTMClient("your-endpoint", "your-appkey");
+var rtm = new RTM("your-endpoint", "your-appkey");
 ```
 
 **Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Developer Portal.
@@ -135,11 +135,11 @@ Verbose logging of all incoming and outcoming PDUs
 You can enable dumping of all PDUs either from your code
 
 ```JavaScript
-var RTMClient = require("satori-rtm-sdk");
-RTMClient.logger.DEBUG = true;
+var RTM = require("satori-rtm-sdk");
+RTM.logger.DEBUG = true;
 
 // create an RTM client instance
-var rtm = new RTMClient("your-endpoint", "your-appkey");
+var rtm = new RTM("your-endpoint", "your-appkey");
 ```
 
 or by setting DEBUG_SATORI_SDK environment variable prior to running your application
