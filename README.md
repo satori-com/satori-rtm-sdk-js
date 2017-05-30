@@ -51,7 +51,7 @@ JavaScript Sample Code
 
 ```JavaScript
 // create a new subscription with "your-channel" name
-var channel = rtm.subscribe("your-channel", RTM.SubscriptionMode.SIMPLE);
+var channel = rtm.subscribe("your-channel", RTMClient.SubscriptionMode.SIMPLE);
 
 // add channel data handlers
 
