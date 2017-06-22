@@ -61,10 +61,10 @@
 
       // Hook up to client connectivity state transitions
       client.on("enter-connected", function () {
-        showText("RTM client is connected");
+        showText("Connected to Satori RTM!");
       });
       client.on("leave-connected", function () {
-        showText("RTM client is disconnected");
+        showText("Disconnected from Satori RTM");
       });
       client.on("error", function (error) {
         var reason = error.body ? error.body.reason : "unknown reason";
@@ -74,11 +74,11 @@
       client.start();
 
       // At this point, the client may not yet be connected to Satori RTM.
-      // If the client is not connected, the SDK internally creates a subscription object
-      // and will subscribe once the client connects.
+      // The SDK internally creates a subscription object and will subscribe
+      // once the client connects.
       var subscription = client.subscribe(channelName, RTM.SubscriptionMode.SIMPLE);
       subscription.on("enter-subscribed", function() {
-        // When subscription is established (confirmed by RTM).
+        // When subscription is established (confirmed by Satori RTM).
         showText("Subscribed to the channel: " + channelName);
       });
       subscription.on("rtm/subscribe/error", function(pdu) {
@@ -104,7 +104,7 @@
           };
           client.publish(channelName, animal, function(pdu) {
             if (pdu.action.endsWith("/ok")) {
-              // Publish is confirmed by RTM.
+              // Publish is confirmed by Satori RTM.
               showText("Animal is published: " + JSON.stringify(animal));
             } else {
               showText("Publish request failed: " + pdu.body.reason);
