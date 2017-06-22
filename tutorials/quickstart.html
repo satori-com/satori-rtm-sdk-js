@@ -47,16 +47,6 @@
          authProvider = RTM.roleSecretAuthProvider(role, roleSecret);
       }
 
-      // Show information about the client configuration
-      var configInfo = "RTM client config:<br />";
-      configInfo += "&nbsp;&nbsp;endpoint = '" + endpoint + "'<br />";
-      configInfo += "&nbsp;&nbsp;appkey = '" + appkey + "'<br />";
-      configInfo += "&nbsp;&nbsp;authenticate? = " + shouldAuthenticate;
-      if (shouldAuthenticate) {
-        configInfo += " (as " + role + ")";
-      }
-      showText(configInfo);
-
       var client = new RTM(endpoint, appkey, { authProvider: authProvider });
 
       // Hook up to client connectivity state transitions
@@ -67,11 +57,26 @@
         showText("Disconnected from Satori RTM");
       });
       client.on("error", function (error) {
-        var reason = error.body ? error.body.reason : "unknown reason";
+        var reason;
+        if (error.body) {
+          reason = error.body.error + " - " + error.body.reason;
+        } else {
+          reason = "unknown reason";
+        }
         showText("RTM client failed: " + reason);
       });
 
       client.start();
+
+      // Show information about the client configuration
+      var configInfo = "RTM client config:<br />";
+      configInfo += "&nbsp;&nbsp;endpoint = '" + endpoint + "'<br />";
+      configInfo += "&nbsp;&nbsp;appkey = '" + appkey + "'<br />";
+      configInfo += "&nbsp;&nbsp;authenticate? = " + shouldAuthenticate;
+      if (shouldAuthenticate) {
+        configInfo += " (as " + role + ")";
+      }
+      showText(configInfo);
 
       // At this point, the client may not yet be connected to Satori RTM.
       // The SDK internally creates a subscription object and will subscribe
@@ -83,7 +88,7 @@
       });
       subscription.on("rtm/subscribe/error", function(pdu) {
         // When a subscribe error occurs.
-        showText("Failed to subscribe : " + pdu.body.reason);
+        showText("Failed to subscribe: " + pdu.body.error + " - " + pdu.body.reason);
       });
       subscription.on("rtm/subscription/data", function(pdu) {
         // Messages arrive in an array.
@@ -107,7 +112,7 @@
               // Publish is confirmed by Satori RTM.
               showText("Animal is published: " + JSON.stringify(animal));
             } else {
-              showText("Publish request failed: " + pdu.body.reason);
+              showText("Publish request failed: " + pdu.body.error + " - " + pdu.body.reason);
             }
           });
         }
