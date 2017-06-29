@@ -1,24 +1,30 @@
 var RTM = require('..');
 
-var endpoint = '<ENDPOINT>';
-var appkey = '<APPKEY>';
+var endpoint = 'YOUR_ENDPOINT';
+var appkey = 'YOUR_APPKEY';
 
-var rtm = new RTM(endpoint, appkey);
+var client = new RTM(endpoint, appkey);
 
-rtm.on('enter-connected', function () {
-  console.log('Connected to RTM!');
+client.on('enter-connected', function () {
+  console.log('Connected to Satori RTM!');
 
-  // publish without acknowledge
-  rtm.publish('mychannel', 'message');
-
-  // publish with acknowledge from RTM
-  rtm.publish('mychannel', { foo: 'bar' }, function (pdu) {
+  var channelName = 'animals';
+  var message = {
+    who: 'zebra',
+    where: [ 34.134358, -118.321506 ]
+  };
+  client.publish(channelName, message , function (pdu) {
     if (pdu.action === 'rtm/publish/ok') {
-      console.log('Message published successfully');
+      console.log('Publish confirmed');
     } else {
-      console.log('Failed to publish');
+      console.log('Failed to publish ' +
+          pdu.body.error + ': ' + pdu.body.reason);
     }
   });
 });
 
-rtm.start();
+client.on('error', function (error) {
+  console.log('Failed to connect', error);
+});
+
+client.start();

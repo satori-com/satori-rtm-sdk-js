@@ -1,8 +1,7 @@
-var RTM = require("satori-rtm-sdk");
+var RTM = require('..');
 
-var endpoint = 'wss://open-data.api.satori.com';
+var endpoint = 'YOUR_ENDPOINT';
 var appkey = 'YOUR_APPKEY';
-var channelName = 'YOUR_CHANNEL'
 
 var client = new RTM(endpoint, appkey);
 
@@ -10,16 +9,21 @@ client.on('enter-connected', function () {
   console.log('Connected to Satori RTM!');
 });
 
-client.on('error', function (e) {
-  console.log('Failed to connect', e);
+var subscrtiptionId = 'zebras';
+var channel = client.subscribe(subscrtiptionId, RTM.SubscriptionMode.SIMPLE, {
+  filter: 'SELECT * FROM `animals` WHERE who = "zebra"'
 });
 
-var channel = client.subscribe(channelName, RTM.SubscriptionMode.SIMPLE);
-
+/* set callback for state transition */
 channel.on('enter-subscribed', function () {
   console.log('Subscribed to: ' + channel.subscriptionId);
 });
 
+channel.on('leave-subscribed', function () {
+  console.log('Unsubscribed from: ' + channel.subscriptionId);
+});
+
+/* set callback for PDU with specific action */
 channel.on('rtm/subscription/data', function (pdu) {
   pdu.body.messages.forEach(function (msg) {
     console.log('Got message:', msg);
