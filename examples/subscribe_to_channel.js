@@ -13,7 +13,6 @@ client.on('error', function (error) {
   console.log('Failed to connect', error);
 });
 
-var channelName = 'animals';
 var channel = client.subscribe('animals', RTM.SubscriptionMode.SIMPLE);
 
 /* set callback for state transition */
@@ -28,7 +27,7 @@ channel.on('leave-subscribed', function () {
 /* set callback for PDU with specific action */
 channel.on('rtm/subscription/data', function (pdu) {
   pdu.body.messages.forEach(function (msg) {
-    console.log('Got message:', msg);
+    console.log('Got animal ' + msg.who + ': ' + JSON.stringify(msg));
   });
 });
 

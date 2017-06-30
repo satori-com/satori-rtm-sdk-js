@@ -17,7 +17,7 @@ client.on('enter-connected', function () {
     if (pdu.action === 'rtm/publish/ok') {
       console.log('Publish confirmed');
     } else {
-      console.log('Failed to publish ' +
+      console.log('Failed to publish. RTM replied with the error ' +
           pdu.body.error + ': ' + pdu.body.reason);
     }
   });
