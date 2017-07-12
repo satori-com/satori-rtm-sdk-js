@@ -62,7 +62,8 @@
     "vinyl-source-stream": "1.1.0",
     "eslint-plugin-import": "1.16.0",
     "eslint-plugin-react": "6.3.0",
-    "eslint-plugin-jsx-a11y": "2.2.2"
+    "eslint-plugin-jsx-a11y": "2.2.2",
+    "@types/node": "^6.0.81"
   },
   "dependencies": {
     "ws": "1.1.4",

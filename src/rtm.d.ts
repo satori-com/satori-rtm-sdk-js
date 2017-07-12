@@ -1,3 +1,7 @@
+/// <reference path="../node_modules/@types/node/index.d.ts" />
+
+import * as http from 'http';
+
 declare module 'satori-rtm-sdk' {
   export = RTM;
 
@@ -31,6 +35,7 @@ declare module 'satori-rtm-sdk' {
     highWaterMark?: number;
     lowWaterMark?: number;
     checkWritabilityInterval?: number;
+    proxyAgent?: http.Agent;
   }
 
   interface ReadOptions {

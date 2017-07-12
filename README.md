@@ -129,7 +129,7 @@ $ npm run build
 The assembled JS output will appear in the `./dist/` directory.
 
 
-Using HTTPS Proxy
+Using HTTPS Proxy (NodeJS only)
 ---------------------------------------------------------------------
 The SDK supports working through an https (not http) proxy.
 
