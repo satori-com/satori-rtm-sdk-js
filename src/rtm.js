@@ -110,6 +110,11 @@ var STATES = {};
  * in milliseconds, to check the queue length and update the <code>writable</code>
  * property as necessary.
  *
+ * @param {object} [opts.proxyAgent] - Proxy server agent.
+ * A custom http.Agent implementation like:
+ * https-proxy-agent https://github.com/TooTallNate/node-https-proxy-agent#ws-websocket-connection-example
+ * socks-proxy-agent https://github.com/TooTallNate/node-socks-proxy-agent#ws-websocket-connection-example
+ *
  * @property {boolean} writable
  * Indicates if the queue length in the WebSocket write buffer, in bytes,
  * is lower than the <code>highWaterMark</code> value.
@@ -871,8 +876,12 @@ RTM.prototype._connect = function () {
   var self = this;
   var ws;
   logger.debug('Connecting to', this.endpoint);
+  if ('proxyAgent' in this.options) {
+    logger.debug('   (using proxy agent)');
+  }
   ws = this.ws = new W3CWebSocket(this.endpoint, [], {
     perMessageDeflate: false,
+    agent: this.options.proxyAgent,
   });
   ws.onopen = function () {
     self.fire('open');

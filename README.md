@@ -129,6 +129,32 @@ $ npm run build
 The assembled JS output will appear in the `./dist/` directory.
 
 
+Using HTTPS Proxy
+---------------------------------------------------------------------
+The SDK supports working through an https (not http) proxy.
+
+When creating a new client specify `proxyAgent` in `options` like this:
+
+```
+var client = new RTM(endpoint, appKey, {
+    proxyAgent: proxyAgent
+});
+```
+
+Use any custom http.Agent implementation like:
+* [https-proxy-agent](https://github.com/TooTallNate/node-https-proxy-agent#ws-websocket-connection-example)
+* [socks-proxy-agent](https://github.com/TooTallNate/node-socks-proxy-agent#ws-websocket-connection-example)
+
+NodeJS example with using `https-proxy-agent`:
+```
+var HttpsProxyAgent = require('https-proxy-agent');
+
+var client = new RTM("YOU_ENDPOINT", "YOUR_APPKEY", {
+    proxyAgent: HttpsProxyAgent('http://127.0.0.1:3128')
+});
+```
+
+
 Verbose logging of all incoming and outcoming PDUs
 ---------------------------------------------------------------------
 
