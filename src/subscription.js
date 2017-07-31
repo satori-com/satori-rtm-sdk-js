@@ -2,38 +2,38 @@ var Observer = require('./observer.js');
 var objectAssign = require('object-assign');
 
 /**
- * Create a subscription instance.
+ * Creates an instance of a subscription. This function inherits functions from
+ * [Observer.js]{@link Observer}, such as [on(event, fn)]{@link Observer#on}
  * @class
  * @augments Observer
  *
  * @description
- * The <code>Subscription</code> class manages the state and events of a
- * subscription.
+ * <code>Subscription</code> represents a subscription to a channel. Its functions manage the
+ * subscription state and respond to subscription events.
  *
- * You can use the <code>Subscription</code> class to define application functionality
- * when specific events occur, like receiving a message, or when the subscription
- * enters different subscription state.
+ * Use <code>Subscription</code> functions to specify code that executes when an event occurs or
+ * when the subscription enters a specific state.
  *
- * When the application receives a message as subscription data, the <code>data</code>
- * event occurs and the received message is passed, as a Protocol Data Unit (PDU),
- * to the <code>fn</code> parameter of the
- * [Subscription.on(event, fn)]{@link Subscription#on} event handler method.
+ * For example, use <code>Subscription.on("rtm/subscription/data", fn())</code> to specify a
+ * function that's executed when the subscription receives a message. Use
+ * <code>Subscription.on("enter-subscribed", fn())</code> to specify a function that's executed
+ * when the subscription is active.
  *
- * Use the [Subscription.on(event, fn)]{@link Subscription#on} method to add an
- * event handler to the subscription, which 'fires' when the subscription
- * receives a published message. The event parameter in this method can take a
- * value of <code>data</code> or the value of the action element of the PDU,
- * for example, <code>rtm/subscription/data</code>.
+ * When your application receives a channel message, the <code>data</code> event occurs and the
+ * message is passed as a Protocol Data Unit (<strong>PDU</strong>) to the function specified for
+ * <code>Subscription.on("rtm/subscription/data", fn())</code>.
  *
- * You can also set event handlers when the subscription enters or leaves
- * subscribed state: <code>enter-subscribed</code>, <code>leave-subscribed<code>.
+ * You can also specify an event handler function that executes when the subscription enters or
+ * leaves subscribed state. For example, to specify an event handler for the
+ * <code>enter-subscribed</code> event, use <code>Subscription.on("enter-subscribed", fn()}</code>.
  *
- * <strong>Note:</strong> When the connection from the RTM client to
- * RTM drops, all subscriptions are unsubscribed, and then resubscribed
- * when the connection is restored.
+ * <strong>Note:</strong> When the connection from the client to RTM drops, all subscriptions are
+ * unsubscribed and then resubscribed when the connection is restored.
  *
  * @example
- * // create a new subscription to the 'your-channel' channel
+ * // Creates an RTM client
+ * var rtm = new RTM('YOUR_ENDPOINT', 'YOUR_APPKEY');
+ * // create a new subscription to the channel named 'your-channel'
  * var subscription = rtm.subscribe('your-channel');
  *
  * subscription.on('rtm/subscription/data', function (pdu) {
@@ -48,20 +48,19 @@ var objectAssign = require('object-assign');
  *     }
  * });
  *
- * @param {string} subscriptionId - String that identifies the subscription. If you do not
- * use the <code>filter</code> parameter, it is treated as a channel name.
+ * @param {string} subscriptionId - unique identifier for the subscription. If you don't use the
+ * <code>filter</code> parameter to specify a streamview, subscriptionId is treated as a channel
+ * name.
  *
- * @param {Object} opts - Additional subscription options.
+ * @param {Object} opts - additional subscription options
  *
- * @param {boolean} [opts.mode] - Subscription mode.
+ * @param {boolean} [opts.mode] - subscription mode
  *
  * @param {object} [opts.bodyOpts={}]
- * Additional subscription options for a channel subscription. These options
- * are sent to RTM in the <code>body</code> element of the PDU that represents the subscribe
- * request.
+ * Additional options for the subscription. These options are sent to RTM in the <code>body</code>
+ * element of the PDU that represents the subscribe request.
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} indicates that mandatory parameters are missing or invalid.
  *
  */
 function Subscription(subscriptionId, _opts) {

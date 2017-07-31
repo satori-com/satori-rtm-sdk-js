@@ -24,7 +24,7 @@ var rtm = new RTM("your-endpoint", "your-appkey");
 
 Where `sdk.min.js` is the minified version and `sdk.js` is the full version. For the rest of the code, see [Sample Code](#code).
 
-**Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Developer Portal.
+**Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Dev Portal.
 
 ### Node.js Installation
 
@@ -43,7 +43,7 @@ var RTM = require("satori-rtm-sdk");
 var rtm = new RTM("your-endpoint", "your-appkey");
 ```
 
-**Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Developer Portal.
+**Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Dev Portal.
 
 
 JavaScript Sample Code

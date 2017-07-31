@@ -20,86 +20,94 @@ var STATES = {};
  * @augments Observer
  *
  * @description
- * The <code>RTM</code> class is the main entry point for accessing RTM services.
+ * An RTM client is the main entry point for accessing RTM.
  *
- * To connect a client to RTM, you must call {@link RTM#start}. The RTM SDK attempts
+ * To connect a client to RTM, you must call [RTM.start()]{@link RTM#start}. The RTM SDK attempts
  * to reconnect to RTM if the connection to RTM fails for any reason.
  *
- * A state machine for the client defines the status of the client instance.
- * A client instance can be in one of the following states: <code>stopped</code>,
- * <code>connecting</code>, <code>connected</code>, or code>awaiting</code>.
+ * A client instance can be in one of the following connection states:
+ *  - <strong>stopped:</strong> You called [RTM.stop()]{@link RTM#stop} or RTM disconnected and
+ *    hasn't yet reconnected.
+ *  - <strong>connecting:</strong> You called [RTM.start()]{@link RTM#start} or the client is
+ *    trying to reconnect to RTM.
+ *  - <strong>connected:</strong> The client is connected to RTM.
+ *  - <strong>awaiting:</strong> The client disconnected and is waiting the specified time period
+ *    before reconnecting. See the <code>minReconnectInterval</code> and
+ *    <code>maxReconnectInterval</code> options.
  *
- * Each client event occurs when the client enters or leaves a state. Use the
- * RTM.on(name, fn)]{@link RTM#on} method to define logic for when the client
- * transitions into or out of a state. See
- * <strong>State Machines</strong> in the online docs.
+ * For each state, an event occurs when the client enters or leaves the state. Call
+ * [RTM.on(name, fn)]{@link RTM#on} method to add code that's executed when the client
+ * transitions into or out of a state. The syntax for the value of <code>name</code> is
  *
+ * <code><strong>[ enter- | leave- ][ stopped | connecting | connected | awaiting ]</strong></code>
+ *
+ * For example, <code>RTM.on("enter-connected", myFunction)</code>. The next example also shows you
+ * how to call <code>RTM.on()</code>
  *
  * @example
- * // create an RTM client
+ * // Creates an RTM client
  * var rtm = new RTM('YOUR_ENDPOINT', 'YOUR_APPKEY');
  *
- * // create a new subscription with 'your-channel' name
+ * // Creates a new subscription to the channel named 'your-channel'
 * var subscription = rtm.subscribe('your-channel', RTM.SubscriptionMode.SIMPLE);
  *
- * // add subscription data handlers
- *
- * // the subscription receives any published message
+ * // Adds a subscription event listener that logs messages to the console as they arrive.
+ * // The subscription receives all messages in the subscribed channel
  * subscription.on('rtm/subscription/data', function (pdu) {
  *     pdu.body.messages.forEach(console.log);
  * });
  *
- * // the client enters 'connected' state
+ * // Sets a connection event listener that publishes a message to the channel named
+ * // <code>your-channel</code>
+ * // when the client is connected to RTM (the client enters the 'connected' state)
  * rtm.on('enter-connected', function () {
  *   rtm.publish('your-channel', {key: 'value'});
  * });
  *
- * // the client receives any PDU - PDU is passed as a parameter
+ * // Sets a client event listener that checks incoming messages to see if they indicate an error.
+ * // <code>rtm.on()</code> is called for all incoming messages.
  * rtm.on('data', function (pdu) {
  *   if (pdu.action.endsWith('/error')) {
  *     rtm.restart();
  *   }
  * });
  *
- * // start the client
+ * // Starts the client
  * rtm.start();
  *
- * @param {string} endpoint - Endpoint for RTM.
+ * @param {string} endpoint - WebSocket endpoint for RTM
  * Available from the Dev Portal.
  *
- * @param {string} appkey - Appkey used to access RTM.
+ * @param {string} appkey - appkey used to access RTM
  * Available from the Dev Portal.
  *
- * @param {object} opts - Additional parameters for the RTM client instance.
+ * @param {object} opts - additional RTM client parameters
  *
- * @param {integer} [opts.minReconnectInterval=1000] - Minimum
- * time period, in milliseconds, to wait between reconnection attempts.
+ * @param {integer} [opts.minReconnectInterval=1000] - minimum
+ * time period, in milliseconds, to wait between reconnection attempts
  *
- * @param {integer} [opts.maxReconnectInterval=120000] - Maximum
- * time period, in milliseconds, to wait between reconnection attempts.
+ * @param {integer} [opts.maxReconnectInterval=120000] - maximum
+ * time period, in milliseconds, to wait between reconnection attempts
  *
- * @param {boolean} [opts.heartbeatEnabled=true] - Enables periodic
- * heartbeat monitoring for the WebSocket connection.
+ * @param {boolean} [opts.heartbeatEnabled=true] - enables periodic
+ * heartbeat monitoring for the WebSocket connection
  *
- * @param {object} [opts.authProvider] - Provider that manages
- * authentication for the RTM client.
+ * @param {object} [opts.authProvider] - object that manages authentication for the client.
+ * See {@link auth.js}
  *
- * @param {integer} [opts.heartbeatInterval=60000] - Interval,
- * in milliseconds, to wait between heartbeat messages.
+ * @param {integer} [opts.heartbeatInterval=60000] - interval,
+ * in milliseconds, to wait between heartbeat messages
+ * @param {integer} [opts.highWaterMark=4194304] - 4MB. High water mark in bytes. If the number
+ * of bytes in the WebSocket write buffer exceeds this value,
+ * [writeable]{@link RTM#writeable} is set to <code>false</code>.
  *
- * @param {integer} [opts.lowWaterMark=2097152] - 2MB. Low water mark,
- * in bytes, of the WebSocket write buffer. If the buffer rises above
- * <code>highWaterMark</code> and then drops below <code>lowWaterMark</code>,
- * the SDK sets [writeable]{@link RTM#writeable} to <code>true</code>.
- *
- * @param {integer} [opts.highWaterMark=4194304] - 4MB. High water mark,
- * in bytes, of the WebSocket write buffer. If the number of bytes queued in the
- * WebSocket write buffer exceeds this value, the SDK sets
- * [writeable]{@link RTM#writeable} to <code>false</code>.
+ * @param {integer} [opts.lowWaterMark=2097152] - 2MB. Low water mark, in bytes. If the
+ * Websocket write buffer rises above <code>highWaterMark</code> and then drops below
+ * <code>lowWaterMark</code>, [writeable]{@link RTM#writeable} is set to <code>true</code>.
  *
  * @param {integer} [opts.checkWritabilityInterval=100] - Interval,
- * in milliseconds, to check the queue length and update the <code>writable</code>
- * property as necessary.
+ * in milliseconds, between checks of the queue length and updates of the
+ * [writeable]{@link RTM#writeable} property if necessary.
  *
  * @param {object} [opts.proxyAgent] - proxy server agent.
  * A custom http.Agent implementation like:
@@ -111,8 +119,8 @@ var STATES = {};
  * indicates that the write buffer is growing. Test <code>writable</code> to see whether you should
  * continue to write or pause writing.
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} <code>TypeError</code> is thrown if mandatory parameters are
+ * missing or invalid.
  */
 function RTM(endpoint, appkey, opts) {
   if (typeof endpoint !== 'string') {
@@ -157,12 +165,15 @@ RTM.logger = logger;
  * @type {object}
  *
  * @property {boolean} trackPosition
- * Tracks the <code>position</code> of the next message in the channel. This lets the SDK
- * resubscribe to the channel and receive messages starting from the last one it successfully
- * received.
+ * Tracks the stream position received from RTM. RTM includes the <code>position</code>
+ * parameter in responses to publish and subscribe requests and in subscription data messages.
+ * The SDK can attempt to resubscribe to the channel data stream from this position.
  *
  * @property {boolean} fastForward
- * RTM fast-forwards the subscription when the SDK resubscribes to a channel.
+ * If necessary, RTM fast-forwards the subscription when the SDK resubscribes to a channel.
+ *
+ * To learn more about position tracking and fast-forwarding, see the sections "... with position"
+ * and "... with fast-forward (advanced)" in the chapter "Subscribing" in <em>Satori Docs</em>.
  */
 
 /**
@@ -174,14 +185,18 @@ RTM.logger = logger;
 
 RTM.SubscriptionMode = {
   /**
-   * The RTM SDK tracks the <code>position</code> and tries to use it when resubscribing.
-   * If the <code>position</code> points to an expired message, RTM fast-forwards the
-   * <code>position</code> to the earliest available message.
    *
-   * This option may result in missed messages if the application has a slow connection
-   * to RTM and cannot keep up with the channel message data sent from RTM.
+   * RTM tracks the <code>position</code> value for the subscription and
+   * tries to use it when resubscribing after the connection drops and the client reconnects.
+   * If the <code>position</code> points to an expired message, RTM fast-forwards to the earliest
+   * <code>position</code> that points to a non-expired message.
    *
-   * For more information about the fast-forward feature, see <em>RTM API</em> in the online docs.
+   * This mode reliably goes to the next available message when RTM is resubscribing. However,
+   * RTM always fast-forwards the subscription if necessary, so it never returns an error for an
+   * 'out-of-sync' condition.
+   *
+   * To learn more about position tracking and fast-forwarding, see the sections "... with position"
+   * and "... with fast-forward (advanced)" in the chapter "Subscribing" in <em>Satori Docs</em>.
    *
    * @type {SubscriptionMode}
    * @static
@@ -194,14 +209,16 @@ RTM.SubscriptionMode = {
   },
 
   /**
-   * The JavaScript SDK does not track the <code>position</code> parameter received from RTM.
-   * Instead, when resubscribing following a reconnection, RTM fast-forwards to
-   * the earliest possible <code>position</code> parameter value.
    *
-   * This option may result in missed messages during reconnection if the application has
-   * a slow connection to RTM and cannot keep up with the channel message stream sent from RTM.
+   * RTM doesn't track the <code>position</code> value for the
+   * subscription. Instead, when RTM resubscribes following a reconnection, it fast-forwards to
+   * the earliest <code>position</code> that points to a non-expired message.
    *
-   * For more information about the fast-forward feature, see <em>RTM API</em> in the online docs.
+   * Because RTM always fast-forwards the subscription, it never returns an error for an
+   * 'out-of-sync' condition.
+   *
+   * To learn more about position tracking and fast-forwarding, see the sections "... with position"
+   * and "... with fast-forward (advanced)" in the chapter "Subscribing" in <em>Satori Docs</em>.
    *
    * @type {SubscriptionMode}
    * @static
@@ -214,18 +231,19 @@ RTM.SubscriptionMode = {
   },
 
   /**
-   * The JavaScript SDK tracks the <code>position</code> parameter and always uses that value when
-   * resubscribing.
    *
-   * If the stream position is expired when the SDK attempts to resubscribe, RTM
-   * sends an <code>expired_position</code> error and unsubscribes.
+   * RTM always tracks the <code>position</code> value for the subscription and tries to
+   * use it when resubscribing after the connection drops and the client reconnects.
    *
-   * If the application has
-   * a slow connection to RTM and cannot keep up with the channel message data sent from RTM,
-   * RTM sends an <code>out_of_sync</code> error and unsubscribes.
+   * If the position points to an expired message, the resubscription attempt fails. RTM sends an
+   * <code>expired_position</code> error and stops the subscription process.
    *
-   * For more information about the <code>expired_position</code> and <code>out_of_sync</code>
-   * errors, see <em>RTM API</em> in the online docs.
+   * If the subscription is active, and RTM detects that the current <code>position</code> value
+   * points to an expired message, the subscription is in an 'out-of-sync' state. In this case,
+   * RTM sends an <code>out_of_sync</code> error and unsubscribes you.
+   *
+   * To learn more about position tracking and fast-forwarding, see the sections "... with position"
+   * and "... with fast-forward (advanced)" in the chapter "Subscribing" in <em>Satori Docs</em>.
    *
    * @type {SubscriptionMode}
    * @static
@@ -239,32 +257,30 @@ RTM.SubscriptionMode = {
 };
 
 /**
- * Creates an authentication provider for the the role-based authentication
- * method.
- *
- * The role-based authentication method is a two-step authentication process
- * based on the HMAC process, using the MD5 hashing routine:
+ * Creates a role-based authentication provider for the client
+ * <p>
+ * The role-based authentication method is a two-step authentication process based on the HMAC
+ * process, using the MD5 hashing routine:
  * <ul>
  * <li>The client obtains a nonce from the server in a handshake request.</li>
- * <li>The client then sends an authorization request with its role secret key
- * hashed with the received nonce.</li>
+ * <li>The client then sends an authorization request with its role secret key hashed with the
+ * received nonce.</li>
  * </ul>
- * <br>
- * Obtain a role secret key from the Dev Portal for your application.
+ * <p>
+ * To get a role secret key for your application, go to the Dev Portal.
  *
- * @param {string} role - Role name.
+ * @param {string} role - role name set in the Dev Portal
  *
- * @param {string} roleSecret - Role secret.
+ * @param {string} roleSecret - role secret key
  *
- * @param {object} opts - Additional authentication options.
+ * @param {object} opts - additional authentication options
  *
- * @param {integer} [opts.timeout=30000] - Amount of time, in milliseconds, before the
- * authentication operation times out.
+ * @param {integer} [opts.timeout=30000] - amount of time, in milliseconds, before the
+ * authentication operation times out
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if mandatory parameters are missing or invalid
  *
- * @return {function} Authentication provider for the role-based authentication method.
+ * @return {function} authentication provider for the role-based authentication method
  */
 RTM.roleSecretAuthProvider = function (role, roleSecret, opts) {
   return auth.roleSecretAuthProvider(role, roleSecret, opts);
@@ -279,7 +295,7 @@ RTM.prototype = Object.create(Observer.prototype);
  * connection drops for any reason, the JavaScript SDK attempts to reconnect.
  *
  *
- * Use [RTM.on(name, fn)]{@link RTM#on} to define application functionality,
+ * Use [RTM.on(name, fn)][RTM.on()]{@link RTM#on} to define application functionality,
  * for example, when the application enters or leaves the
  * <code>connecting</code> or <code>connected</code> states.
  *
@@ -293,13 +309,14 @@ RTM.prototype.start = function () {
 };
 
 /**
- * Stops the client. The SDK begins to close the WebSocket connection and
- * does not start it again unless you call [start()]{@link RTM#start}.
+ * Stops the client. The RTM SDK starts to close the WebSocket connection and
+ * does not start it again unless you call [RTM.start()]{@link RTM#start}.
  *
  * Use this method to explicitly stop all interaction with RTM.
  *
- * Use [RTM.on(name, fn)]{@link RTM#on} to define application functionality,
- * for example, when the application enters or leaves the <code>stopped</code> state.
+ * Use [RTM.on("enter-stopped", function())]{@link RTM#on} or
+ * [RTM.on("leave-stopped", function())]{@link RTM#on} to
+ * provide code that executes when the client enters or leaves the <code>stopped</code> state.
  *
  * @return {void}
  */
@@ -311,7 +328,9 @@ RTM.prototype.stop = function () {
 };
 
 /**
- * Restarts the client.
+ * Calls [RTM.stop()]{@link RTM#stop} followed by [RTM.start()]{@link RTM#start] to
+ * restart the client. RTM issues events for these client states, which you can handle with code in
+ * [RTM.on(name, function())]{@link RTM#on}.
  *
  * @return {void}
  */
@@ -323,8 +342,8 @@ RTM.prototype.restart = function () {
 /**
  * Returns <code>true</code> if the RTM client is in the <code>stopped</code> state.
  *
- * @return {boolean}
- * <code>true</code> if the client is in the <code>stopped</code> state; false otherwise.
+ * @return {boolean} <code>true</code> if the client is in the <code>stopped</code> state,
+ * otherwise <code>false</code>
  */
 RTM.prototype.isStopped = function () {
   return this.state === STOPPED;
@@ -333,26 +352,25 @@ RTM.prototype.isStopped = function () {
 /**
  * Returns <code>true</code> if the client is in the <code>connected</code> state.
  *
- * In this state, the WebSocket connection is established and any authentication
- * (if necessary) has successfully completed.
+ * In this state, the WebSocket connection to RTM is established and any requested authentication
+ * has completed successfully .
  *
- * @return {boolean}
- * <code>true</code> if the client is in the <code>connected</code> state; false otherwise.
+ * @return {boolean} <code>true</code> if the client is in the <code>connected</code> state,
+ * otherwise <code>false</code>
  */
 RTM.prototype.isConnected = function () {
   return this.state === CONNECTED;
 };
 
 /**
- * Returns a [Subscription]{@link Subscription} object for the associated subscription id.
- * The <code>Subscription</code> object must exist.
+ * Returns the existing [Subscription]{@link Subscription} object for the specified subscription id.
  *
- * @param {string} subscriptionId - Subscription id.
+ * @param {string} subscriptionId - the id for an existing [Subscription]{@link Subscription} object
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if <code>subscriptionId</code> is missing, invalid, or if a
+ * [Subscription]{@link Subscription} object with that id doesn't exist.
  *
- * @return {Subscription} The [Subscription]{@link Subscription} object.
+ * @return {Subscription} the [Subscription]{@link Subscription} object
  */
 RTM.prototype.getSubscription = function (subscriptionId) {
   if (typeof subscriptionId !== 'string') {
@@ -364,63 +382,61 @@ RTM.prototype.getSubscription = function (subscriptionId) {
 /**
  * Creates a subscription to the specified channel.
  *
- * When you create a channel subscription, you can specify additional properties,
- * for example, add a filter to the subscription and specify the
- * behavior of the SDK when resubscribing after a reconnection.
+ * When you create a subscription, you can specify additional properties.
+ * For example, you can add a streamview, or you can specify the
+ * what the SDK does when it resubscribes after a reconnection.
  *
- * @param {string} channelOrSubId - String that identifies the channel. If you do not
- * use the <code>filter</code> parameter, it is the channel name. Otherwise,
- * it is a unique identifier for the channel (subscription id).
+ * @param {string} channelOrSubId - string containing a channel id or name. If you do not
+ * specify the <code>filter</code> parameter, specify the channel name. Otherwise,
+ * specify a unique identifier for your subscription to this channel.
  *
  * @param {RTM.SubscriptionMode} mode
- * Subscription mode. This mode determines the behaviour of the Javascript
- * SDK and RTM when resubscribing after a reconnection.
+ * subscription mode. This mode determines the behaviour of the RTM SDK and RTM when resubscribing
+ * after a reconnection. See [SubscriptionMode]{@link SubscriptionMode}.
  *
  * @param {object} [bodyOpts={}]
- * Additional subscription options for a channel subscription. These options
- * are sent to RTM in the <code>body</code> element of the
- * Protocol Data Unit (PDU) that represents the subscribe request.
+ * additional options for the subscription
  *
- * For more information about the <code>body</code> element of a PDU,
- * see <em>RTM API</em> in the online docs.
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if mandatory parameters are missing or invalid.
  *
- * @return {Subscription} - Subscription object.
+ * @return {Subscription} - subscription object
  *
  * @example
+ * // Creates a new RTM client
  * var rtm = new RTM('YOUR_ENDPOINT', 'YOUR_APPKEY');
  *
- * // create a subscription with 'your-channel' name
+ * // Creates a subscription with the name 'your-channel'
  * var subscription = rtm.subscribe('your-channel', RTM.SubscriptionMode.SIMPLE);
  *
- * // the subscription receives any published message
+ * // Writes incoming messages to the log
  * subscription.on('rtm/subscription/data', function (pdu) {
  *     pdu.body.messages.forEach(console.log);
  * });
  *
+ * // Starts the client
  * rtm.start();
  *
  * @example
+ * // Creates a new RTM client
  * var rtm = new RTM('YOUR_ENDPOINT', 'YOUR_APPKEY');
  *
- * // subscribe to the channel named 'my-channel' using a filter
+ * // Subscribes to the channel named 'my-channel' using a streamview
  * var subscription = rtm.subscribe('my-filter', RTM.SubscriptionMode.SIMPLE, {
  *   filter: 'SELECT * FROM my-channel WHERE object.param >= 1 OR object.id == 0',
  * });
  *
- * // receive messages published to the channel
+ * // Writes incoming messages to the log
  * subscription.on('rtm/subscription/data', function (pdu) {
  *   pdu.body.messages.forEach(console.log);
  * });
  *
- * // receive subscription data messages
- * subscription.on('data', function (pdu) {
+ * // Sets a client event listener, for unsolicited subscription PDUs, that reacts to an error PDU
+ * // by restarting the client connection. The PDU is passed as a parameter.
+ * rtm.on('data', function (pdu) {
  *   if (pdu.action.endsWith('/error')) {
  *     rtm.restart();
  *   }
- * });
  *
  * rtm.start();
  *
@@ -466,26 +482,23 @@ RTM.prototype.subscribe = function (channelOrSubId, mode, bodyOpts) {
 };
 
 /**
- * Updates an existing [Subscription]{@link Subscription} object. All event
- * handlers are copied to the updated object.
+ * Updates an existing [Subscription]{@link Subscription} object. Existing
+ * [Subscription]{@link Subscription} event handlers are copied to the updated object.
  *
- * Use this method to change an existing subscription, for example,
- * to add or change a filter.
+ * Use this method to change an existing subscription. For example, use it to add or change a
+ * streamview.
  *
- * @param {string} channelOrSubId - Subscription id or channel name of
- * the existing subscription.
+ * @param {string} channelOrSubId - subscription id or channel name for
+ * the existing subscription
  *
  * @param {Object} opts
  * Properties for the updated <code>Subscription</code> object. See
- * [RTM.subscribe(channelOrSubId, opts)]{@link RTM#subscribe} and the
- * <em>RTM API</em> in the online docs for the supported property names.
+ * [RTM.subscribe(channelOrSubId, opts)]{@link #subscribe} for the supported property names.
  *
  * @param {Function} [onCompleted]
- * Function to execute on the updated <code>Subscription</code> object, passed
- * as a parameter.
+ * function to execute on the updated <code>Subscription</code> object
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if mandatory parameters are missing or invalid.
  *
  * @return {void}
  */
@@ -510,18 +523,14 @@ RTM.prototype.resubscribe = function (channelOrSubId, mode, bodyOpts, onComplete
 /**
  * Removes the specified subscription.
  *
- * The response Protocol Data Unit (PDU) from the RTM is
- * passed as a parameter to the <code>onAck</code> function.
- *
  * @param {string} subscriptionId - Subscription id or channel name.
  *
  * @param {Function} [onAck]
- * Function to execute on the response PDU from
- * RTM. The response PDU is passed as a parameter to this function.
- * RTM does not send a response PDU if a callback is not specified.
+ * Callback function that's invoked when RTM responds to the unsubscribe request. RTM passes the
+ * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
+ * response PDU.
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if required parameters are missing or invalid
  *
  * @return {void}
  */
@@ -558,28 +567,29 @@ RTM.prototype.unsubscribe = function (subscriptionId, onAck) {
 };
 
 /**
- * Publishes a message to a channel. The [RTM]{@link RTM} client
- * must be connected.
+ * Publishes a message to a channel. The client must be connected.
  *
  * @example
+ * // Publishes to the channel named "channel", and provides a callback function that's invoked when
+ * // RTM responds to the request. If the PDU "action" value doesn't end with "ok", the function
+ * // logs an error.
  * rtm.publish('channel', {key: 'value'}, function (pdu) {
  *   if (!pdu.action.endsWith('/ok')) {
  *     console.log('something went wrong');
  *   }
  * });
  *
- * @param {string} channel - Channel name.
+ * @param {string} channel - channel name
  *
  * @param {JSON} message
- * JSON that represents the message payload to publish.
+ * JSON containing the message to publish
  *
  * @param {Function} [onAck]
- * Function to attach and execute on the response PDU from
- * RTM. The response PDU is passed as a parameter to this function.
- * RTM does not send a response PDU if a callback is not specified.
+ * Callback function that's invoked when RTM responds to the publish request. RTM passes the
+ * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
+ * response PDU.
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if required parameters are missing or invalid
  *
  * @return {void}
  */
@@ -603,52 +613,53 @@ RTM.prototype.publish = function (channel, message, onAck) {
 
 /**
  * Reads the latest message written to a specific channel, as a Protocol
- * Data Unit (PDU). The [RTM]{@link RTM} client must be connected.
+ * Data Unit (<strong>PDU</strong>). The client must be connected.
  *
  * @variation 1
  *
- * @param {string} channel - Channel name.
+ * @param {string} channel - name of the channel to read from
  *
  * @param {Function} [onAck]
- * Function to attach and execute on the response PDU from
- * RTM. The response PDU is passed as a parameter to this function.
- * RTM does not send a response PDU if a callback is not specified.
+ * Callback function that's invoked when RTM responds to the publish request. RTM passes the
+ * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
+ * response PDU.
  *
  * @example
+ * // Reads from the channel named 'channel' and prints the response PDU
  * rtm.read('channel', function (pdu) {
  *     console.log(pdu);
  * })
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if required parameters are missing or invalid
  *
  * @return {void}
  *
  * @also
  *
  * Reads the latest message written to specific channel, as a Protocol
- * Data Unit (PDU).
- * The [RTM]{@link RTM} client must be connected.
+ * Data Unit (<strong>PDU</strong>). The client must be connected.
  *
  * @variation 2
  *
- * @param {string} channel - Channel name.
+ * @param {string} channel - name of the channel to read from
  *
  * @param {object} [opts={}]
- * Additional <code>body</code> options for the read PDU.
- * For more information, see <em>RTM API/em> in the online docs.
+ * Additional options in the read PDU that's sent to RTM in the request.
+ * For more information, see the section "Read PDU" in the "RTM API" chapter of <em>Satori Docs/em>.
  *
  * @param {object} [opts.bodyOpts={}]
- * Additional read request options. These options are sent to
- * RTM in the <code>body</code> element of the
- * PDU that represents the read request.
+ * Additional options in the <code>body</code> element of the read PDU that's sent to
+ * RTM in the request.
  *
  * @param {Function} [opts.onAck]
- * Function to attach and execute on the response PDU from
- * RTM. The response PDU is passed as a parameter to this function.
- * RTM does not send a response PDU if a callback is not specified.
+ * Callback function that's invoked when RTM responds to the publish request. RTM passes the
+ * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
+ * response PDU.
  *
  * @example
+ * // Reads from the channel named 'channel', starting at the position specified by the
+ * // "position" key.
+ * // Prints the response PDU.
  * rtm.read('channel', {
  *   bodyOpts: { position: '1485444476:0' },
  *   onAck: function (pdu) {
@@ -656,8 +667,7 @@ RTM.prototype.publish = function (channel, message, onAck) {
  *   }
  * })
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if required parameters are missing or invalid
  *
  * @return {void}
  */
@@ -680,25 +690,25 @@ RTM.prototype.read = function (channel, onAckOrOpts) {
 };
 
 /**
- * Writes a value to the specified channel. The [RTM]{@link RTM} client must be connected.
+ * Writes a value to the specified channel. The client must be connected.
  *
- * @param {string} channel - Channel name.
+ * @param {string} channel - name of the channel to write to
  *
  * @param {JSON} value
- * JSON that represents the message payload to publish.
+ * JSON containing the PDU to write to the channel
  *
  * @param {Function} [onAck]
- * Function to attach and execute on the response PDU from
- * RTM. The response PDU is passed as a parameter to this function.
- * RTM does not send a response PDU if a callback is not specified.
+ * Callback function that's invoked when RTM responds to the publish request. RTM passes the
+ * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
+ * response PDU.
  *
  * @example
+ * // Writes the string 'value' to the channel named 'channel' and prints the response PDU.
  * rtm.write('channel', 'value', function (pdu) {
  *     console.log(pdu);
  * })
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if required parameters are missing or invalid
  *
  * @return {void}
  */
@@ -718,22 +728,21 @@ RTM.prototype.write = function (channel, value, onAck) {
 };
 
 /**
- * Deletes the value of the specified key from the key-value store. The [RTM]{@link RTM} client must be connected.
+ * Deletes the value for the associated channel. The [RTM]{@link RTM} client must be connected.
  *
  * @param {string} channel - Channel name.
  *
  * @param {Function} [onAck]
- * Function to attach and execute on the response PDU from
- * RTM. The response PDU is passed as a parameter to this function.
- * RTM does not send a response PDU if a callback is not specified.
+ * Callback function that's invoked when RTM responds to the publish request. RTM passes the
+ * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
+ * response PDU.
  *
  * @example
  * rtm.delete('channel', function (pdu) {
  *     console.log(pdu);
  * })
  *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
+ * @throws {TypeError} thrown if required parameters are missing or invalid
  *
  * @return {void}
  */
