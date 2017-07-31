@@ -12,15 +12,6 @@ Observer.prototype = {
   /**
    * Attaches an event handler function for named event.
    *
-   * The event <code>name</code> is one of the client or
-   * subscription state machine events,
-   * for example, <code>data</code> or <code>enter-connected</code>
-   * for the [RTM]{@link RTM} client or <code>enter-subscribed</code> for a
-   * [Subscription]{@link Subscription} object.
-   *
-   * The Protocol Data Unit (PDU) for the event is passed to the
-   * <code>fn</code> function parameter.
-   *
    * @param {string} name - Event name.
    *
    * @param {function} fn - Event handler function.
@@ -36,15 +27,6 @@ Observer.prototype = {
 
   /**
    * Removes an event handler.
-   *
-   * The event <code>name</code> is one of the client or
-   * subscription state machine events,
-   * for example, <code>data</code> or <code>enter-connected</code>
-   * for the [RTM]{@link RTM} client or <code>enter-subscribed</code> for a
-   * [Subscription]{@link Subscription} object.
-   *
-   * The Protocol Data Unit (PDU) for the event is passed to the
-   * <code>fn</code> function parameter.
    *
    * @param {string} name - Event name.
    *
@@ -62,12 +44,7 @@ Observer.prototype = {
   },
 
   /**
-   * Executes all handlers attached to the given event type.
-   *
-   * The event <code>name</code> is one of the client or subscription state machine events,
-   * for example, <code>data</code> or <code>enter-connected</code>
-   * for the [RTM]{@link RTM} client or <code>enter-subscribed</code> for a
-   * [Subscription]{@link Subscription} object.
+   * Executes all handlers attached to the given named event.
    *
    * @param {string} name - Event name.
    * @param {...Object} args - Event arguments.

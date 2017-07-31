@@ -20,18 +20,10 @@ var STATES = {};
  * @augments Observer
  *
  * @description
- * The <code>RTM</code> class is the main entry point to manage the
- * WebSocket connection from the JavaScript SDK to RTM.
+ * The <code>RTM</code> class is the main entry point for accessing RTM services.
  *
- * Use the RTM class to create a client instance from which you can
- * publish messages and subscribe to channels. Create separate
- * [Subscription]{@link Subscription} objects for each channel to
- * which you want to subscribe.
- *
- * Use the [publish(channel, message, onAck)]{@link RTM#publish}
- * method to publish messages and either the
- * [Subscription.on(name, fn)]{@link Subscription#on} or
- * [RTM.on(name, fn)]{@link RTM#on} methods to process incoming messages.
+ * To connect a client to RTM, you must call {@link RTM#start}. The RTM SDK attempts
+ * to reconnect to RTM if the connection to RTM fails for any reason.
  *
  * A state machine for the client defines the status of the client instance.
  * A client instance can be in one of the following states: <code>stopped</code>,
@@ -45,7 +37,7 @@ var STATES = {};
  *
  * @example
  * // create an RTM client
- * var rtm = new RTM('ENDPOINT', 'APPKEY');
+ * var rtm = new RTM('YOUR_ENDPOINT', 'YOUR_APPKEY');
  *
  * // create a new subscription with 'your-channel' name
 * var subscription = rtm.subscribe('your-channel', RTM.SubscriptionMode.SIMPLE);
@@ -95,29 +87,29 @@ var STATES = {};
  * @param {integer} [opts.heartbeatInterval=60000] - Interval,
  * in milliseconds, to wait between heartbeat messages.
  *
+ * @param {integer} [opts.lowWaterMark=2097152] - 2MB. Low water mark,
+ * in bytes, of the WebSocket write buffer. If the buffer rises above
+ * <code>highWaterMark</code> and then drops below <code>lowWaterMark</code>,
+ * the SDK sets [writeable]{@link RTM#writeable} to <code>true</code>.
  *
  * @param {integer} [opts.highWaterMark=4194304] - 4MB. High water mark,
  * in bytes, of the WebSocket write buffer. If the number of bytes queued in the
  * WebSocket write buffer exceeds this value, the SDK sets
  * [writeable]{@link RTM#writeable} to <code>false</code>.
  *
- * @param {integer} [opts.lowWaterMark=2097152] - 2MB. Low water mark,
- * in bytes, of the WebSocket write buffer. If the buffer rises above
- * <code>highWaterMark</code> and then drops below <code>lowWaterMark</code>,
- * the SDK sets [writeable]{@link RTM#writeable} to <code>true</code>.
- *
  * @param {integer} [opts.checkWritabilityInterval=100] - Interval,
  * in milliseconds, to check the queue length and update the <code>writable</code>
  * property as necessary.
  *
- * @param {object} [opts.proxyAgent] - Proxy server agent.
+ * @param {object} [opts.proxyAgent] - proxy server agent.
  * A custom http.Agent implementation like:
  * https-proxy-agent https://github.com/TooTallNate/node-https-proxy-agent#ws-websocket-connection-example
  * socks-proxy-agent https://github.com/TooTallNate/node-socks-proxy-agent#ws-websocket-connection-example
  *
- * @property {boolean} writable
- * Indicates if the queue length in the WebSocket write buffer, in bytes,
- * is lower than the <code>highWaterMark</code> value.
+ * @property {boolean} writable - A general indicator of the status of the write buffer.
+ * <code>true</code> indicates that the write buffer is shrinking, while <code>false</code>
+ * indicates that the write buffer is growing. Test <code>writable</code> to see whether you should
+ * continue to write or pause writing.
  *
  * @throws {TypeError} <code>TypeError</code> indicates that mandatory
  * parameters are missing or invalid.
@@ -165,9 +157,9 @@ RTM.logger = logger;
  * @type {object}
  *
  * @property {boolean} trackPosition
- * Tracks the stream position received from RTM. RTM includes the <code>position</code>
- * parameter in responses to publish and subscribe requests and in subscription data messages.
- * The SDK can attempt to resubscribe to the channel data stream from this position.
+ * Tracks the <code>position</code> of the next message in the channel. This lets the SDK
+ * resubscribe to the channel and receive messages starting from the last one it successfully
+ * received.
  *
  * @property {boolean} fastForward
  * RTM fast-forwards the subscription when the SDK resubscribes to a channel.
@@ -182,10 +174,9 @@ RTM.logger = logger;
 
 RTM.SubscriptionMode = {
   /**
-   * The JavaScript SDK
-   * tracks the <code>position</code> parameter and attempts to use that value when
-   * resubscribing. If the <code>position</code> parameter is expired, RTM fast-forwards
-   * to the earliest possible <code>position</code> value.
+   * The RTM SDK tracks the <code>position</code> and tries to use it when resubscribing.
+   * If the <code>position</code> points to an expired message, RTM fast-forwards the
+   * <code>position</code> to the earliest available message.
    *
    * This option may result in missed messages if the application has a slow connection
    * to RTM and cannot keep up with the channel message data sent from RTM.
@@ -261,9 +252,9 @@ RTM.SubscriptionMode = {
  * <br>
  * Obtain a role secret key from the Dev Portal for your application.
  *
- * @param {string} role - User role to authenticate with.
+ * @param {string} role - Role name.
  *
- * @param {string} roleSecret - Role secret key from Dev Portal.
+ * @param {string} roleSecret - Role secret.
  *
  * @param {object} opts - Additional authentication options.
  *
@@ -377,9 +368,6 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * for example, add a filter to the subscription and specify the
  * behavior of the SDK when resubscribing after a reconnection.
  *
- * For more information about the options for a channel subscription,
- * see <strong>Subscribe PDU</strong> in the online docs.
- *
  * @param {string} channelOrSubId - String that identifies the channel. If you do not
  * use the <code>filter</code> parameter, it is the channel name. Otherwise,
  * it is a unique identifier for the channel (subscription id).
@@ -387,9 +375,6 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * @param {RTM.SubscriptionMode} mode
  * Subscription mode. This mode determines the behaviour of the Javascript
  * SDK and RTM when resubscribing after a reconnection.
- *
- * For more information about the options for a subscription,
- * see <strong>Subscribe PDU</strong> in the online docs.
  *
  * @param {object} [bodyOpts={}]
  * Additional subscription options for a channel subscription. These options
@@ -405,7 +390,7 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * @return {Subscription} - Subscription object.
  *
  * @example
- * var rtm = new RTM('ENDPOINT', 'APPKEY');
+ * var rtm = new RTM('YOUR_ENDPOINT', 'YOUR_APPKEY');
  *
  * // create a subscription with 'your-channel' name
  * var subscription = rtm.subscribe('your-channel', RTM.SubscriptionMode.SIMPLE);
@@ -418,7 +403,7 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * rtm.start();
  *
  * @example
- * var rtm = new RTM('your-endpoint', 'your-appkey');
+ * var rtm = new RTM('YOUR_ENDPOINT', 'YOUR_APPKEY');
  *
  * // subscribe to the channel named 'my-channel' using a filter
  * var subscription = rtm.subscribe('my-filter', RTM.SubscriptionMode.SIMPLE, {
@@ -528,9 +513,6 @@ RTM.prototype.resubscribe = function (channelOrSubId, mode, bodyOpts, onComplete
  * The response Protocol Data Unit (PDU) from the RTM is
  * passed as a parameter to the <code>onAck</code> function.
  *
- * For more information, see <strong>Unsubscribe PDU</strong> in the
- * online docs.
- *
  * @param {string} subscriptionId - Subscription id or channel name.
  *
  * @param {Function} [onAck]
@@ -555,9 +537,9 @@ RTM.prototype.unsubscribe = function (subscriptionId, onAck) {
   if (!sub) {
     throw new Error('Unknown subscription ' + subscriptionId);
   }
+
   // This method is called when rtm/unsubscribe/(ok|error) is returned.
-  // If subscription is not subscribed (e.g. client is disconnected)
-  // then this method is called immediately without argument.
+  // If client is disconnected this method is called immediately without argument.
   onUnsubscribed = function (unsubscribeReplyPdu) {
     if (unsubscribeReplyPdu) {
       sub.onPdu(unsubscribeReplyPdu);
@@ -736,7 +718,7 @@ RTM.prototype.write = function (channel, value, onAck) {
 };
 
 /**
- * Deletes the value for the associated channel. The [RTM]{@link RTM} client must be connected.
+ * Deletes the value of the specified key from the key-value store. The [RTM]{@link RTM} client must be connected.
  *
  * @param {string} channel - Channel name.
  *

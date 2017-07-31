@@ -12,7 +12,7 @@ var objectAssign = require('object-assign');
  *
  * You can use the <code>Subscription</code> class to define application functionality
  * when specific events occur, like receiving a message, or when the subscription
- * enters different subscription state machine state.
+ * enters different subscription state.
  *
  * When the application receives a message as subscription data, the <code>data</code>
  * event occurs and the received message is passed, as a Protocol Data Unit (PDU),
@@ -26,30 +26,21 @@ var objectAssign = require('object-assign');
  * for example, <code>rtm/subscription/data</code>.
  *
  * You can also set event handlers when the subscription enters or leaves
- * a state in the subscription state machine. A subscription can be in
- * one of the following states: <code>subscribing</code>, <code>subscribed</code>,
- * <code>unsubscribing</code>, <code>unsubscribed</code>, or <code>failed</code>.
- *
- * See
- * <strong>State Machines</strong> in the online docs.
+ * subscribed state: <code>enter-subscribed</code>, <code>leave-subscribed<code>.
  *
  * <strong>Note:</strong> When the connection from the RTM client to
  * RTM drops, all subscriptions are unsubscribed, and then resubscribed
- * when the connection is restored. You can direct the JavaScript SDK to automatically
- * reconnect or you can detect the disconnect manually and then reconnect to
- * RTM at the proper message stream position with the
- * <code>position</code> parameter.
+ * when the connection is restored.
  *
  * @example
  * // create a new subscription to the 'your-channel' channel
  * var subscription = rtm.subscribe('your-channel');
  *
- *
  * subscription.on('rtm/subscription/data', function (pdu) {
  *     pdu.body.messages.forEach(console.log);
  * });
  * subscription.on('enter-subscribed', function () {
- *     rtm.publish('your-channel', {type: 'init'});
+ *     console.log('Subscribed!');
  * });
  * subscription.on('data', function (pdu) {
  *     if (pdu.action.endWith('/error')) {
@@ -57,23 +48,17 @@ var objectAssign = require('object-assign');
  *     }
  * });
  *
- * @param {string} subscriptionId - String that identifies the channel. If you do not
- * use the <code>filter</code> parameter, it is the channel name. Otherwise,
- * it is a unique identifier for the channel (subscription id).
+ * @param {string} subscriptionId - String that identifies the subscription. If you do not
+ * use the <code>filter</code> parameter, it is treated as a channel name.
  *
  * @param {Object} opts - Additional subscription options.
  *
- * @param {boolean} [opts.mode]
- * Sets subscription mode. Can be <code>SIMPLE</code>, <code>RELIABLE</code>, or
- * <code>ADVANCED</code>.
+ * @param {boolean} [opts.mode] - Subscription mode.
  *
  * @param {object} [opts.bodyOpts={}]
  * Additional subscription options for a channel subscription. These options
  * are sent to RTM in the <code>body</code> element of the PDU that represents the subscribe
  * request.
- *
- * For more information about the <code>body</code> element of a PDU,
- * see <em>RTM API</em> in the online docs.
  *
  * @throws {TypeError} <code>TypeError</code> indicates that mandatory
  * parameters are missing or invalid.
