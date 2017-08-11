@@ -79,7 +79,7 @@ rtm.start();
 Documentation
 ---------------------------------------------------------------------
 
-You can view the latest JavaScript SDK documentation [here](./API.md).
+You can view the latest JavaScript SDK documentation [here](https://github.com/satori-com/satori-rtm-sdk-js/blob/v1.0.2/API.md).
 
 #### Generating API docs
 
@@ -93,17 +93,17 @@ The generated API documentation will apear in the `./docs` folder.
 Testing Your Changes
 ---------------------------------------------------------------------
 
-Tests require an active RTM Service to be available. The tests require `credentials.json` to be populated with the RTM Service properties.
+Tests require an active RTM to be available. The tests require `credentials.json` to be populated with the RTM properties.
 
 The `credentials.json` file must include the following key-value pairs:
 
 ```
 {
-  "endpoint": "wss://<SATORI_HOST>/",
-  "appkey": "<APP_KEY>",
-  "auth_role_name": "<ROLE_NAME>",
-  "auth_role_secret_key": "<ROLE_SECRET_KEY>",
-  "auth_restricted_channel": "<CHANNEL_NAME>"
+  "endpoint": "YOUR_ENDPOINT",
+  "appkey": "YOUR_APPKEY",
+  "auth_role_name": "YOUR_ROLE",
+  "auth_role_secret_key": "YOUR_SECRET",
+  "auth_restricted_channel": "YOUR_RESTRICTED_CHANNEL"
 }
 ```
 
@@ -149,7 +149,7 @@ NodeJS example with using `https-proxy-agent`:
 ```
 var HttpsProxyAgent = require('https-proxy-agent');
 
-var client = new RTM("YOU_ENDPOINT", "YOUR_APPKEY", {
+var client = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY", {
     proxyAgent: HttpsProxyAgent('http://127.0.0.1:3128')
 });
 ```
@@ -165,7 +165,7 @@ var RTM = require("satori-rtm-sdk");
 RTM.logger.DEBUG = true;
 
 // create an RTM client instance
-var rtm = new RTM("your-endpoint", "your-appkey");
+var rtm = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY");
 ```
 
 or by setting DEBUG_SATORI_SDK environment variable prior to running your application
