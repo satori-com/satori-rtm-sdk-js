@@ -1,6 +1,7 @@
-v1.1.0 (???)
+v1.1.0 (2017-08-11)
 -------------------
-* Add Secure proxy support
+* Add secure proxy support
+* Review SDK API documentation
 
 v1.0.2 (2017-05-04)
 -------------------

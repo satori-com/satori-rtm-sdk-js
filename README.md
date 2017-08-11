@@ -12,14 +12,14 @@ JavaScript SDK Installation
 To use the JavaScript SDK from a browser-based application, include the SDK from the CDN and create an RTM client instance:
 
 ```HTML
-<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.0.2/sdk.min.js"></script>
-<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.0.2/sdk.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.1.0/sdk.min.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.1.0/sdk.js"></script>
 ```
 and then
 
 ```JavaScript
 // create an RTM client instance
-var rtm = new RTM("your-endpoint", "your-appkey");
+var rtm = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY");
 ```
 
 Where `sdk.min.js` is the minified version and `sdk.js` is the full version. For the rest of the code, see [Sample Code](#code).
@@ -40,7 +40,7 @@ npm install 'satori-rtm-sdk'
 var RTM = require("satori-rtm-sdk");
 
 // create an RTM client instance
-var rtm = new RTM("your-endpoint", "your-appkey");
+var rtm = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY");
 ```
 
 **Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Dev Portal.
@@ -79,7 +79,7 @@ rtm.start();
 Documentation
 ---------------------------------------------------------------------
 
-You can view the latest JavaScript SDK documentation [here](https://github.com/satori-com/satori-rtm-sdk-js/blob/v1.0.2/API.md).
+You can view the latest JavaScript SDK documentation [here](https://github.com/satori-com/satori-rtm-sdk-js/blob/v1.1.0/API.md).
 
 #### Generating API docs
 
