@@ -22,7 +22,7 @@ and then
 var rtm = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY");
 ```
 
-Where `sdk.min.js` is the minified version and `sdk.js` is the full version. For the rest of the code, see [Sample Code](#code).
+Where `sdk.min.js` is the minified version and `sdk.js` is the full version.
 
 **Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Dev Portal.
 
