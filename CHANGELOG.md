@@ -1,3 +1,7 @@
+v1.1.1 (2017-08-29)
+-------------------
+* Fix TypeScript definition file
+
 v1.1.0 (2017-08-11)
 -------------------
 * Add secure proxy support

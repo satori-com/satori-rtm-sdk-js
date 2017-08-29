@@ -1,7 +1,3 @@
-/// <reference types="node" />
-
-import * as http from 'http';
-
 type OnAck = (pdu: PDU) => void;
 type OnEvent = (...args: any[]) => void;
 type OnCompleted = (subscription: RTM.Subscription) => void;
@@ -32,7 +28,7 @@ interface RTMOptions {
   highWaterMark?: number;
   lowWaterMark?: number;
   checkWritabilityInterval?: number;
-  proxyAgent?: http.Agent;
+  proxyAgent?: any;
 }
 
 interface ReadOptions {
