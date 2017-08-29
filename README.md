@@ -12,8 +12,8 @@ JavaScript SDK Installation
 To use the JavaScript SDK from a browser-based application, include the SDK from the CDN and create an RTM client instance:
 
 ```HTML
-<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.1.0/sdk.min.js"></script>
-<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.1.0/sdk.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.1.1/sdk.min.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.1.1/sdk.js"></script>
 ```
 and then
 
@@ -79,7 +79,7 @@ rtm.start();
 Documentation
 ---------------------------------------------------------------------
 
-You can view the latest JavaScript SDK documentation [here](https://github.com/satori-com/satori-rtm-sdk-js/blob/v1.1.0/API.md).
+You can view the latest JavaScript SDK documentation [here](https://github.com/satori-com/satori-rtm-sdk-js/blob/v1.1.1/API.md).
 
 #### Generating API docs
 
