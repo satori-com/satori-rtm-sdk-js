@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import * as http from 'http';
 
 type OnAck = (pdu: PDU) => void;
