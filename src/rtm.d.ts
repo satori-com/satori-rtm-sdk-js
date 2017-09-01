@@ -29,6 +29,7 @@ interface RTMOptions {
   lowWaterMark?: number;
   checkWritabilityInterval?: number;
   proxyAgent?: any;
+  protocol?: "json" | "cbor";
 }
 
 interface ReadOptions {

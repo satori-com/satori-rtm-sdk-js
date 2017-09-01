@@ -76,6 +76,7 @@ rtm.on("data", function(pdu) {
 rtm.start();
 ```
 
+
 Documentation
 ---------------------------------------------------------------------
 
@@ -90,32 +91,6 @@ $ npm run docs
 The generated API documentation will apear in the `./docs` folder.
 
 
-Testing Your Changes
----------------------------------------------------------------------
-
-Tests require an active RTM to be available. The tests require `credentials.json` to be populated with the RTM properties.
-
-The `credentials.json` file must include the following key-value pairs:
-
-```
-{
-  "endpoint": "YOUR_ENDPOINT",
-  "appkey": "YOUR_APPKEY",
-  "auth_role_name": "YOUR_ROLE",
-  "auth_role_secret_key": "YOUR_SECRET",
-  "auth_restricted_channel": "YOUR_RESTRICTED_CHANNEL"
-}
-```
-
-* `endpoint` is your customer-specific DNS name for RTM access.
-* `appkey` is your application key.
-* `auth_role_name` is a role name that permits to publish / subscribe to `auth_restricted_channel`. Must be not `default`.
-* `auth_role_secret_key` is a secret key for `auth_role_name`.
-* `auth_restricted_channel` is a channel with subscribe and publish access for `auth_role_name` role only.
-
-After setting up `credentials.json`, just type `npm test` at the command line.
-
-
 Assembling from sources
 ---------------------------------------------------------------------
 
@@ -127,6 +102,31 @@ $ npm run build
 ```
 
 The assembled JS output will appear in the `./dist/` directory.
+
+
+Binary data support
+---------------------------------------------------------------------
+RTM supports CBOR protocol to work with binary data. Binary data is
+represented as `Uint8Array`.
+
+<details>
+<summary>An example to work with binary data:</summary>
+
+```JavaScript
+var client = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY", {protocol: 'cbor'});
+
+client.on('enter-connected', function () {
+  var message = {
+    who: 'zebra',
+    where: new Uint8Array([1,2,3,4,5])
+  };
+  client.publish('animals', message, function (pdu) {
+    console.log('Message published:', pdu);
+  });
+});
+
+client.start();
+```
 
 
 Using HTTPS Proxy (NodeJS only)
@@ -174,3 +174,29 @@ or by setting DEBUG_SATORI_SDK environment variable prior to running your applic
 $ export DEBUG_SATORI_SDK=true
 $ node myapp.js
 ```
+
+
+Testing Your Changes
+---------------------------------------------------------------------
+
+Tests require an active RTM to be available. The tests require `credentials.json` to be populated with the RTM properties.
+
+The `credentials.json` file must include the following key-value pairs:
+
+```
+{
+  "endpoint": "YOUR_ENDPOINT",
+  "appkey": "YOUR_APPKEY",
+  "auth_role_name": "YOUR_ROLE",
+  "auth_role_secret_key": "YOUR_SECRET",
+  "auth_restricted_channel": "YOUR_RESTRICTED_CHANNEL"
+}
+```
+
+* `endpoint` is your customer-specific endpoint for RTM access.
+* `appkey` is your application key.
+* `auth_role_name` is a role name that permits to publish / subscribe to `auth_restricted_channel`. Must be not `default`.
+* `auth_role_secret_key` is a secret key for `auth_role_name`.
+* `auth_restricted_channel` is a channel with subscribe and publish access for `auth_role_name` role only.
+
+After setting up `credentials.json`, just type `npm test` at the command line.

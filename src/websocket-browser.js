@@ -3,8 +3,8 @@ var _global = (function () {
 }());
 var NativeWebSocket = _global.WebSocket || _global.MozWebSocket;
 
-function W3CWebSocket(uri) {
-  return new NativeWebSocket(uri);
+function W3CWebSocket(uri, protocols) {
+  return new NativeWebSocket(uri, protocols);
 }
 
 module.exports = NativeWebSocket ? W3CWebSocket : null;
