@@ -923,9 +923,15 @@ RTM.prototype._decode = function (data) {
   var debugVar;
   // check the subprotocol selected by server
   if (this.ws.protocol === 'cbor') {
+    if (!(data instanceof ArrayBuffer)) {
+      throw new TypeError('CBOR protocol expects ArrayBuffer as incoming data from WebSocket');
+    }
     obj = CBOR.decode(data);
     debugVar = obj;
   } else {
+    if (!(typeof data === 'string')) {
+      throw new TypeError('JSON protocol expects string as incoming data from WebSocket');
+    }
     obj = JSON.parse(data);
     debugVar = data;
   }
