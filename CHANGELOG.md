@@ -1,3 +1,7 @@
+Unreleased
+-------------------
+* Add CBOR support
+
 v1.1.1 (2017-08-29)
 -------------------
 * Fix TypeScript definition file

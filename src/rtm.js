@@ -5,6 +5,7 @@ var logger = require('./logger.js');
 var auth = require('./auth.js');
 var objectAssign = require('object-assign');
 var CMap = require('./map.js');
+var CBOR = require('./cbor.js');
 
 var RTM_VER = 'v2';
 var STOPPED = 'stopped';
@@ -89,6 +90,8 @@ var STATES = {};
  * @param {integer} [opts.maxReconnectInterval=120000] - maximum
  * time period, in milliseconds, to wait between reconnection attempts
  *
+ * @param {('json'|'cbor')} [opts.protocol='json'] - WebSocket protocol to use
+ *
  * @param {boolean} [opts.heartbeatEnabled=true] - enables periodic
  * heartbeat monitoring for the WebSocket connection
  *
@@ -136,6 +139,7 @@ function RTM(endpoint, appkey, opts) {
     maxReconnectInterval: 120000,
     heartbeatInterval: 60000,
     heartbeatEnabled: true,
+    protocol: 'json',
     highWaterMark: 1024 * 1024 * 4, // 4Mb is the maximum queue length. Writable flag sets to false
     lowWaterMark: 1024 * 1024 * 2, // 2Mb unblock the writing. Writable flag sets to true
     checkWritabilityInterval: 100,
@@ -866,24 +870,24 @@ RTM.prototype._setWritableState = function (newState) {
 RTM.prototype._connect = function () {
   var self = this;
   var ws;
-  logger.debug('Connecting to', this.endpoint);
+  logger.debug('Connecting to', this.endpoint, '(' + this.options.protocol + ')');
   if ('proxyAgent' in this.options) {
     logger.debug('   (using proxy agent)');
   }
-  ws = this.ws = new W3CWebSocket(this.endpoint, [], {
+  ws = this.ws = new W3CWebSocket(this.endpoint, this.options.protocol, {
     perMessageDeflate: false,
     agent: this.options.proxyAgent,
   });
+  ws.binaryType = 'arraybuffer';
   ws.onopen = function () {
     self.fire('open');
   };
   ws.onmessage = function (message) {
-    var json;
+    var obj;
     try {
-      logger.debug('recv<', message.data);
-      json = JSON.parse(message.data);
-      self._recv(json);
-      self.fire('data', json);
+      obj = self._decode(message.data);
+      self._recv(obj);
+      self.fire('data', obj);
     } catch (error) {
       self.fire('error', error);
     }
@@ -899,6 +903,42 @@ RTM.prototype._connect = function () {
   };
 };
 
+RTM.prototype._encode = function (obj) {
+  var data;
+  var debugVar;
+  // check the subprotocol selected by server
+  if (this.ws.protocol === 'cbor') {
+    data = CBOR.encode(obj);
+    debugVar = obj;
+  } else {
+    data = JSON.stringify(obj);
+    debugVar = data;
+  }
+  logger.debug('>>>', debugVar);
+  return data;
+};
+
+RTM.prototype._decode = function (data) {
+  var obj;
+  var debugVar;
+  // check the subprotocol selected by server
+  if (this.ws.protocol === 'cbor') {
+    if (!(data instanceof ArrayBuffer)) {
+      throw new TypeError('CBOR protocol expects ArrayBuffer as incoming data from WebSocket');
+    }
+    obj = CBOR.decode(data);
+    debugVar = obj;
+  } else {
+    if (!(typeof data === 'string')) {
+      throw new TypeError('JSON protocol expects string as incoming data from WebSocket');
+    }
+    obj = JSON.parse(data);
+    debugVar = data;
+  }
+  logger.debug('<<<', debugVar);
+  return obj;
+};
+
 RTM.prototype._send = function (pdu, onAck) {
   if (!this.isConnected()) {
     throw new Error('Client is not connected');
@@ -908,15 +948,14 @@ RTM.prototype._send = function (pdu, onAck) {
 
 RTM.prototype._unsafeSend = function (origPdu, onAck) {
   var pdu = objectAssign({}, origPdu);
-  var json;
+  var data;
   if (onAck) {
     pdu.id = 'id' in pdu ? pdu.id : this._nextId();
     this.ackCallbacks.set(pdu.id, onAck);
   }
-  json = JSON.stringify(pdu);
-  logger.debug('send>', json);
+  data = this._encode(pdu);
   try {
-    this.ws.send(json, {
+    this.ws.send(data, {
       mask: this.maskMessage,
     });
   } catch (error) {
