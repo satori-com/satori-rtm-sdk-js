@@ -13,7 +13,6 @@ To use the JavaScript SDK from a browser-based application, include the SDK from
 
 ```HTML
 <script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.1.1/sdk.min.js"></script>
-<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.1.1/sdk.js"></script>
 ```
 and then
 
@@ -21,8 +20,6 @@ and then
 // create an RTM client instance
 var rtm = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY");
 ```
-
-Where `sdk.min.js` is the minified version and `sdk.js` is the full version.
 
 **Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Dev Portal.
 
@@ -43,7 +40,7 @@ var RTM = require("satori-rtm-sdk");
 var rtm = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY");
 ```
 
-**Note**: You can find the application key and endpoint on the **Appkey Info** page for your app in the Dev Portal.
+**Note**: You can find the application key and endpoint for your app in the Dev Portal.
 
 
 JavaScript Sample Code
@@ -176,10 +173,10 @@ $ node myapp.js
 ```
 
 
-Testing Your Changes
+Testing
 ---------------------------------------------------------------------
 
-Tests require an active RTM to be available. The tests require `credentials.json` to be populated with the RTM properties.
+The SDK includes an integration test suite. The tests connect to RTM, so you need to provide RTM credentials.
 
 The `credentials.json` file must include the following key-value pairs:
 
