@@ -9,8 +9,8 @@ client.on('enter-connected', function () {
   console.log('Connected to Satori RTM!');
 });
 
-var subscrtiptionId = 'zebras';
-var channel = client.subscribe(subscrtiptionId, RTM.SubscriptionMode.SIMPLE, {
+var subscriptionId = 'zebras';
+var channel = client.subscribe(subscriptionId, RTM.SubscriptionMode.SIMPLE, {
   filter: 'SELECT * FROM `animals` WHERE who = "zebra"'
 });
 
