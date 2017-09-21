@@ -124,7 +124,7 @@ client.on('enter-connected', function () {
 
 client.start();
 ```
-
+</details>
 
 Using HTTPS Proxy (NodeJS only)
 ---------------------------------------------------------------------
