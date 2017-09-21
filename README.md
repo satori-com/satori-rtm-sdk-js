@@ -132,7 +132,7 @@ The SDK supports working through an https (not http) proxy.
 
 When creating a new client specify `proxyAgent` in `options` like this:
 
-```
+```JavaScript
 var client = new RTM(endpoint, appKey, {
     proxyAgent: proxyAgent
 });
@@ -143,7 +143,7 @@ Use any custom http.Agent implementation like:
 * [socks-proxy-agent](https://github.com/TooTallNate/node-socks-proxy-agent#ws-websocket-connection-example)
 
 NodeJS example with using `https-proxy-agent`:
-```
+```JavaScript
 var HttpsProxyAgent = require('https-proxy-agent');
 
 var client = new RTM("YOUR_ENDPOINT", "YOUR_APPKEY", {
@@ -180,7 +180,7 @@ The SDK includes an integration test suite. The tests connect to RTM, so you nee
 
 The `credentials.json` file must include the following key-value pairs:
 
-```
+```json
 {
   "endpoint": "YOUR_ENDPOINT",
   "appkey": "YOUR_APPKEY",
