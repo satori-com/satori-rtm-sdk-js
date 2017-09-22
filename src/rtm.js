@@ -386,21 +386,62 @@ RTM.prototype.getSubscription = function (subscriptionId) {
 /**
  * Creates a subscription to the specified channel.
  *
- * When you create a subscription, you can specify additional properties.
- * For example, you can add a streamview, or you can specify the
- * what the SDK does when it resubscribes after a reconnection.
+ * When you create a subscription, you can specify additional options in the
+ * <code>bodyOpts</code> parameter. For example, you can specify a streamview or specify what the
+ * SDK does when it resubscribes after a reconnection.
  *
- * @param {string} channelOrSubId - string containing a channel id or name. If you do not
- * specify the <code>filter</code> parameter, specify the channel name. Otherwise,
- * specify a unique identifier for your subscription to this channel.
+ * @param {string} channelOrSubId - Contains a channel name or a subscription id. If you don't
+ * specify the <code>filter</code> field in <code>bodyOpts</code>, specify the channel name.
+ * Otherwise, specify the channel name in the stream SQL in the <code>filter</code> field, and
+ * specify a subscription id in <code>channelOrSubId</code>.
  *
- * @param {RTM.SubscriptionMode} mode
- * subscription mode. This mode determines the behaviour of the RTM SDK and RTM when resubscribing
- * after a reconnection. See [SubscriptionMode]{@link SubscriptionMode}.
+ * @param {RTM.SubscriptionMode} mode - Contains flags that determine the resubscribe behavior of
+ * the RTM SDK and RTM. See [SubscriptionMode]{@link SubscriptionMode}.
  *
- * @param {object} [bodyOpts={}]
- * additional options for the subscription
+ * @param {object} [bodyOpts={}] - Contains additional options for the subscription
  *
+ * @param {string} [bodyOpts.channel] - Name of the channel that you want to subscribe to.
+ * If the subscription specifies a view, this value must match the channel name specified in the
+ * the <code>filter</code> field.
+ *
+ * @param {string} [bodyOpts.subscription_id] - Your identifier for the subscription.
+ * If the subscription specifies a streamview, this parameter is required.
+ *
+ * @param {boolean} [bodyOpts.force=false] - Determines how RTM should act if the subscribe request
+ * contains a <code>subscription_id</code> that already exists. If true, RTM re-subscribes or
+ * creates a new subscription, depending on the specified subscription parameters. If false, RTM
+ * returns an error.
+ *
+ * @param {boolean} [bodyOpts.fast_forward=false] - Determines how RTM should act if it detects
+ * that the next message position for the subscription is pointing to an expired message (out of
+ * sync condition). If true, RTM moves the next message position to the least recent un-expired
+ * message in the channel. If false, RTM returns an error and terminates the subscription.
+ *
+ * @param {integer} [bodyOpts.position] - Position of a message in the channel. If you don't
+ * specify the <code>history</code> field, RTM uses this position as the next message position
+ * for the subscription. Otherwise, RTM interprets the value in <code>history</code> as an offset
+ * from the value of <code>position</code>.
+ *
+ * @param {object} [bodyOpts.history] - Object that contains history parameters.
+ *
+ * @param {integer} [bodyOpts.history.count] - Offset from a message position, specified as a
+ * number of messages. RTM starts the subscription this many messages before the position that the
+ * subscription otherwise starts with. If you specify <code>bodyOpts.position</code>, RTM uses that
+ * position as the starting point for the offset. <strong>Note:</strong> If you specify
+ * <code>count</code>, you can't specify <code>age</code>.
+ *
+ * @param {integer} [bodyOpts.history.age] - Offset from a message position, specified as a
+ * duration in seconds. RTM starts the subscription at the least recent message that's this
+ * many seconds older than the position that the subscription otherwise starts with. If you
+ * specify <code>bodyOpts.position</code>, RTM uses that position as the starting point for the
+ * offset. <strong>Note:</strong> If you specify <code>age</code>, you can't specify
+ * <code>count</code>.
+ *
+ * @param {string} [bodyOpts.filter] - Contains a stream SQL statement that selects,
+ * transforms, or aggregates messages in the specified channel
+ *
+ * @param {integer} [bodyOpts.period] - Specifies a duration in seconds for each partition
+ * in an aggregate view. The maximum value is 60 (1 minute).
  *
  * @throws {TypeError} thrown if mandatory parameters are missing or invalid.
  *

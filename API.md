@@ -171,6 +171,7 @@ missing or invalid.
 | opts | <code>object</code> |  | additional RTM client parameters |
 | [opts.minReconnectInterval] | <code>integer</code> | <code>1000</code> | minimum time period, in milliseconds, to wait between reconnection attempts |
 | [opts.maxReconnectInterval] | <code>integer</code> | <code>120000</code> | maximum time period, in milliseconds, to wait between reconnection attempts |
+| [opts.protocol] | <code>&#x27;json&#x27;</code> &#124; <code>&#x27;cbor&#x27;</code> | <code>&#x27;json&#x27;</code> | WebSocket protocol to use |
 | [opts.heartbeatEnabled] | <code>boolean</code> | <code>true</code> | enables periodic heartbeat monitoring for the WebSocket connection |
 | [opts.authProvider] | <code>object</code> |  | object that manages authentication for the client. See [auth.js](auth.js) |
 | [opts.heartbeatInterval] | <code>integer</code> | <code>60000</code> | interval, in milliseconds, to wait between heartbeat messages |
@@ -288,9 +289,9 @@ Returns the existing [Subscription](#Subscription) object for the specified subs
 ### RTM.subscribe(channelOrSubId, mode, [bodyOpts]) ⇒ <code>[Subscription](#Subscription)</code>
 Creates a subscription to the specified channel.
 
-When you create a subscription, you can specify additional properties.
-For example, you can add a streamview, or you can specify the
-what the SDK does when it resubscribes after a reconnection.
+When you create a subscription, you can specify additional options in the
+<code>bodyOpts</code> parameter. For example, you can specify a streamview or specify what the
+SDK does when it resubscribes after a reconnection.
 
 **Kind**: instance method of <code>[RTM](#RTM)</code>  
 **Returns**: <code>[Subscription](#Subscription)</code> - - subscription object  
@@ -307,9 +308,19 @@ what the SDK does when it resubscribes after a reconnection.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| channelOrSubId | <code>string</code> |  | string containing a channel id or name. If you do not specify the <code>filter</code> parameter, specify the channel name. Otherwise, specify a unique identifier for your subscription to this channel. |
-| mode | <code>[SubscriptionMode](#RTM.SubscriptionMode)</code> |  | subscription mode. This mode determines the behaviour of the RTM SDK and RTM when resubscribing after a reconnection. See [SubscriptionMode](#SubscriptionMode). |
-| [bodyOpts] | <code>object</code> | <code>{}</code> | additional options for the subscription |
+| channelOrSubId | <code>string</code> |  | Contains a channel name or a subscription id. If you don't specify the <code>filter</code> field in <code>bodyOpts</code>, specify the channel name. Otherwise, specify the channel name in the stream SQL in the <code>filter</code> field, and specify a subscription id in <code>channelOrSubId</code>. |
+| mode | <code>[SubscriptionMode](#RTM.SubscriptionMode)</code> |  | Contains flags that determine the resubscribe behavior of the RTM SDK and RTM. See [SubscriptionMode](#SubscriptionMode). |
+| [bodyOpts] | <code>object</code> | <code>{}</code> | Contains additional options for the subscription |
+| [bodyOpts.channel] | <code>string</code> |  | Name of the channel that you want to subscribe to. If the subscription specifies a view, this value must match the channel name specified in the the <code>filter</code> field. |
+| [bodyOpts.subscription_id] | <code>string</code> |  | Your identifier for the subscription. If the subscription specifies a streamview, this parameter is required. |
+| [bodyOpts.force] | <code>boolean</code> | <code>false</code> | Determines how RTM should act if the subscribe request contains a <code>subscription_id</code> that already exists. If true, RTM re-subscribes or creates a new subscription, depending on the specified subscription parameters. If false, RTM returns an error. |
+| [bodyOpts.fast_forward] | <code>boolean</code> | <code>false</code> | Determines how RTM should act if it detects that the next message position for the subscription is pointing to an expired message (out of sync condition). If true, RTM moves the next message position to the least recent un-expired message in the channel. If false, RTM returns an error and terminates the subscription. |
+| [bodyOpts.position] | <code>integer</code> |  | Position of a message in the channel. If you don't specify the <code>history</code> field, RTM uses this position as the next message position for the subscription. Otherwise, RTM interprets the value in <code>history</code> as an offset from the value of <code>position</code>. |
+| [bodyOpts.history] | <code>object</code> |  | Object that contains history parameters. |
+| [bodyOpts.history.count] | <code>integer</code> |  | Offset from a message position, specified as a number of messages. RTM starts the subscription this many messages before the position that the subscription otherwise starts with. If you specify <code>bodyOpts.position</code>, RTM uses that position as the starting point for the offset. <strong>Note:</strong> If you specify <code>count</code>, you can't specify <code>age</code>. |
+| [bodyOpts.history.age] | <code>integer</code> |  | Offset from a message position, specified as a duration in seconds. RTM starts the subscription at the least recent message that's this many seconds older than the position that the subscription otherwise starts with. If you specify <code>bodyOpts.position</code>, RTM uses that position as the starting point for the offset. <strong>Note:</strong> If you specify <code>age</code>, you can't specify <code>count</code>. |
+| [bodyOpts.filter] | <code>string</code> |  | Contains a stream SQL statement that selects, transforms, or aggregates messages in the specified channel |
+| [bodyOpts.period] | <code>integer</code> |  | Specifies a duration in seconds for each partition in an aggregate view. The maximum value is 60 (1 minute). |
 
 **Example**  
 ```js
@@ -751,7 +762,7 @@ unsubscribed and then resubscribed when the connection is restored.
 | subscriptionId | <code>string</code> |  | unique identifier for the subscription. If you don't use the <code>filter</code> parameter to specify a streamview, subscriptionId is treated as a channel name. |
 | opts | <code>Object</code> |  | additional subscription options |
 | [opts.mode] | <code>boolean</code> |  | subscription mode |
-| [opts.bodyOpts] | <code>object</code> | <code>{}</code> | Additional options for the subscription. These options are sent to RTM in the <code>body</code> element of the PDU that represents the subscribe request. |
+| [opts.bodyOpts] | <code>object</code> | <code>{}</code> | Additional options for the subscription. These options are sent to RTM in the <code>body</code> element of the PDU that represents the subscribe request. The keys in <code>bodyOpts</code> are documented in the parameter list for [RTM.subscribe()](#RTM+subscribe) |
 
 **Example**  
 ```js

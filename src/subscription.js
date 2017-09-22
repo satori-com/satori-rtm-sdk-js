@@ -58,7 +58,8 @@ var objectAssign = require('object-assign');
  *
  * @param {object} [opts.bodyOpts={}]
  * Additional options for the subscription. These options are sent to RTM in the <code>body</code>
- * element of the PDU that represents the subscribe request.
+ * element of the PDU that represents the subscribe request. The keys in <code>bodyOpts</code> are
+ * documented in the parameter list for [RTM.subscribe()]{@link RTM#subscribe}
  *
  * @throws {TypeError} indicates that mandatory parameters are missing or invalid.
  *
