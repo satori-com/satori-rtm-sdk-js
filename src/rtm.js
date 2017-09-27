@@ -400,10 +400,6 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  *
  * @param {object} [bodyOpts={}] - Contains additional options for the subscription
  *
- * @param {string} [bodyOpts.channel] - Name of the channel that you want to subscribe to.
- * If the subscription specifies a view, this value must match the channel name specified in the
- * the <code>filter</code> field.
- *
  * @param {string} [bodyOpts.subscription_id] - Your identifier for the subscription.
  * If the subscription specifies a streamview, this parameter is required.
  *
@@ -411,11 +407,6 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * contains a <code>subscription_id</code> that already exists. If true, RTM re-subscribes or
  * creates a new subscription, depending on the specified subscription parameters. If false, RTM
  * returns an error.
- *
- * @param {boolean} [bodyOpts.fast_forward=false] - Determines how RTM should act if it detects
- * that the next message position for the subscription is pointing to an expired message (out of
- * sync condition). If true, RTM moves the next message position to the least recent un-expired
- * message in the channel. If false, RTM returns an error and terminates the subscription.
  *
  * @param {int} [bodyOpts.position] - Position of a message in the channel. If you don't
  * specify the <code>history</code> field, RTM uses this position as the next message position

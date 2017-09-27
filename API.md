@@ -113,10 +113,10 @@ The event specified in <code>name</code> is an [RTM](#RTM) or
         * [.isConnected()](#RTM+isConnected) ⇒ <code>boolean</code>
         * [.getSubscription(subscriptionId)](#RTM+getSubscription) ⇒ <code>[Subscription](#Subscription)</code>
         * [.subscribe(channelOrSubId, mode, [bodyOpts])](#RTM+subscribe) ⇒ <code>[Subscription](#Subscription)</code>
-        * [.resubscribe(channelOrSubId, opts, [onCompleted])](#RTM+resubscribe) ⇒ <code>void</code>
+        * [.resubscribe(channelOrSubId, mode, bodyOpts, [onCompleted])](#RTM+resubscribe) ⇒ <code>void</code>
         * [.unsubscribe(subscriptionId, [onAck])](#RTM+unsubscribe) ⇒ <code>void</code>
         * [.publish(channel, message, [onAck])](#RTM+publish) ⇒ <code>void</code>
-        * [.read(channel, [onAck])](#RTM+read(1)) ⇒ <code>void</code>
+        * [.read(channel, [onAckOrOpts])](#RTM+read(1)) ⇒ <code>void</code>
         * [.read(channel, [opts])](#RTM+read(2)) ⇒ <code>void</code>
         * [.write(channel, value, [onAck])](#RTM+write) ⇒ <code>void</code>
         * [.delete(channel, [onAck])](#RTM+delete) ⇒ <code>void</code>
@@ -169,15 +169,15 @@ missing or invalid.
 | endpoint | <code>string</code> |  | WebSocket endpoint for RTM Available from the Dev Portal. |
 | appkey | <code>string</code> |  | appkey used to access RTM Available from the Dev Portal. |
 | opts | <code>object</code> |  | additional RTM client parameters |
-| [opts.minReconnectInterval] | <code>integer</code> | <code>1000</code> | minimum time period, in milliseconds, to wait between reconnection attempts |
-| [opts.maxReconnectInterval] | <code>integer</code> | <code>120000</code> | maximum time period, in milliseconds, to wait between reconnection attempts |
+| [opts.minReconnectInterval] | <code>int</code> | <code>1000</code> | minimum time period, in milliseconds, to wait between reconnection attempts |
+| [opts.maxReconnectInterval] | <code>int</code> | <code>120000</code> | maximum time period, in milliseconds, to wait between reconnection attempts |
 | [opts.protocol] | <code>&#x27;json&#x27;</code> &#124; <code>&#x27;cbor&#x27;</code> | <code>&#x27;json&#x27;</code> | WebSocket protocol to use |
 | [opts.heartbeatEnabled] | <code>boolean</code> | <code>true</code> | enables periodic heartbeat monitoring for the WebSocket connection |
 | [opts.authProvider] | <code>object</code> |  | object that manages authentication for the client. See [auth.js](auth.js) |
-| [opts.heartbeatInterval] | <code>integer</code> | <code>60000</code> | interval, in milliseconds, to wait between heartbeat messages |
-| [opts.highWaterMark] | <code>integer</code> | <code>4194304</code> | 4MB. High water mark in bytes. If the number of bytes in the WebSocket write buffer exceeds this value, [writeable](RTM#writeable) is set to <code>false</code>. |
-| [opts.lowWaterMark] | <code>integer</code> | <code>2097152</code> | 2MB. Low water mark, in bytes. If the Websocket write buffer rises above <code>highWaterMark</code> and then drops below <code>lowWaterMark</code>, [writeable](RTM#writeable) is set to <code>true</code>. |
-| [opts.checkWritabilityInterval] | <code>integer</code> | <code>100</code> | Interval, in milliseconds, between checks of the queue length and updates of the [writeable](RTM#writeable) property if necessary. |
+| [opts.heartbeatInterval] | <code>int</code> | <code>60000</code> | interval, in milliseconds, to wait between heartbeat messages |
+| [opts.highWaterMark] | <code>int</code> | <code>4194304</code> | 4MB. High water mark in bytes. If the number of bytes in the WebSocket write buffer exceeds this value, [writeable](RTM#writeable) is set to <code>false</code>. |
+| [opts.lowWaterMark] | <code>int</code> | <code>2097152</code> | 2MB. Low water mark, in bytes. If the WebSocket write buffer rises above <code>highWaterMark</code> and then drops below <code>lowWaterMark</code>, [writeable](RTM#writeable) is set to <code>true</code>. |
+| [opts.checkWritabilityInterval] | <code>int</code> | <code>100</code> | Interval, in milliseconds, between checks of the queue length and updates of the [writeable](RTM#writeable) property if necessary. |
 | [opts.proxyAgent] | <code>object</code> |  | proxy server agent. A custom http.Agent implementation like: https-proxy-agent https://github.com/TooTallNate/node-https-proxy-agent#ws-websocket-connection-example socks-proxy-agent https://github.com/TooTallNate/node-socks-proxy-agent#ws-websocket-connection-example |
 
 **Example**  
@@ -311,16 +311,14 @@ SDK does when it resubscribes after a reconnection.
 | channelOrSubId | <code>string</code> |  | Contains a channel name or a subscription id. If you don't specify the <code>filter</code> field in <code>bodyOpts</code>, specify the channel name. Otherwise, specify the channel name in the stream SQL in the <code>filter</code> field, and specify a subscription id in <code>channelOrSubId</code>. |
 | mode | <code>[SubscriptionMode](#RTM.SubscriptionMode)</code> |  | Contains flags that determine the resubscribe behavior of the RTM SDK and RTM. See [SubscriptionMode](#SubscriptionMode). |
 | [bodyOpts] | <code>object</code> | <code>{}</code> | Contains additional options for the subscription |
-| [bodyOpts.channel] | <code>string</code> |  | Name of the channel that you want to subscribe to. If the subscription specifies a view, this value must match the channel name specified in the the <code>filter</code> field. |
 | [bodyOpts.subscription_id] | <code>string</code> |  | Your identifier for the subscription. If the subscription specifies a streamview, this parameter is required. |
 | [bodyOpts.force] | <code>boolean</code> | <code>false</code> | Determines how RTM should act if the subscribe request contains a <code>subscription_id</code> that already exists. If true, RTM re-subscribes or creates a new subscription, depending on the specified subscription parameters. If false, RTM returns an error. |
-| [bodyOpts.fast_forward] | <code>boolean</code> | <code>false</code> | Determines how RTM should act if it detects that the next message position for the subscription is pointing to an expired message (out of sync condition). If true, RTM moves the next message position to the least recent un-expired message in the channel. If false, RTM returns an error and terminates the subscription. |
-| [bodyOpts.position] | <code>integer</code> |  | Position of a message in the channel. If you don't specify the <code>history</code> field, RTM uses this position as the next message position for the subscription. Otherwise, RTM interprets the value in <code>history</code> as an offset from the value of <code>position</code>. |
+| [bodyOpts.position] | <code>int</code> |  | Position of a message in the channel. If you don't specify the <code>history</code> field, RTM uses this position as the next message position for the subscription. Otherwise, RTM interprets the value in <code>history</code> as an offset from the value of <code>position</code>. |
 | [bodyOpts.history] | <code>object</code> |  | Object that contains history parameters. |
-| [bodyOpts.history.count] | <code>integer</code> |  | Offset from a message position, specified as a number of messages. RTM starts the subscription this many messages before the position that the subscription otherwise starts with. If you specify <code>bodyOpts.position</code>, RTM uses that position as the starting point for the offset. <strong>Note:</strong> If you specify <code>count</code>, you can't specify <code>age</code>. |
-| [bodyOpts.history.age] | <code>integer</code> |  | Offset from a message position, specified as a duration in seconds. RTM starts the subscription at the least recent message that's this many seconds older than the position that the subscription otherwise starts with. If you specify <code>bodyOpts.position</code>, RTM uses that position as the starting point for the offset. <strong>Note:</strong> If you specify <code>age</code>, you can't specify <code>count</code>. |
+| [bodyOpts.history.count] | <code>int</code> |  | Offset from a message position, specified as a number of messages. RTM starts the subscription this many messages before the position that the subscription otherwise starts with. If you specify <code>bodyOpts.position</code>, RTM uses that position as the starting point for the offset. <strong>Note:</strong> If you specify <code>count</code>, you can't specify <code>age</code>. |
+| [bodyOpts.history.age] | <code>int</code> |  | Offset from a message position, specified as a duration in seconds. RTM starts the subscription at the least recent message that's this many seconds older than the position that the subscription otherwise starts with. If you specify <code>bodyOpts.position</code>, RTM uses that position as the starting point for the offset. <strong>Note:</strong> If you specify <code>age</code>, you can't specify <code>count</code>. |
 | [bodyOpts.filter] | <code>string</code> |  | Contains a stream SQL statement that selects, transforms, or aggregates messages in the specified channel |
-| [bodyOpts.period] | <code>integer</code> |  | Specifies a duration in seconds for each partition in an aggregate view. The maximum value is 60 (1 minute). |
+| [bodyOpts.period] | <code>int</code> |  | Specifies a duration in seconds for each partition in an aggregate view. The maximum value is 60 (1 minute). |
 
 **Example**  
 ```js
@@ -364,7 +362,7 @@ rtm.start();
 ```
 <a name="RTM+resubscribe"></a>
 
-### RTM.resubscribe(channelOrSubId, opts, [onCompleted]) ⇒ <code>void</code>
+### RTM.resubscribe(channelOrSubId, mode, bodyOpts, [onCompleted]) ⇒ <code>void</code>
 Updates an existing [Subscription](#Subscription) object. Existing
 [Subscription](#Subscription) event handlers are copied to the updated object.
 
@@ -380,7 +378,8 @@ streamview.
 | Param | Type | Description |
 | --- | --- | --- |
 | channelOrSubId | <code>string</code> | subscription id or channel name for the existing subscription |
-| opts | <code>Object</code> | Properties for the updated <code>Subscription</code> object. See [RTM.subscribe(channelOrSubId, opts)](#subscribe) for the supported property names. |
+| mode | <code>[SubscriptionMode](#RTM.SubscriptionMode)</code> | Contains flags that determine the resubscribe behavior of the RTM SDK and RTM. See [SubscriptionMode](#SubscriptionMode). |
+| bodyOpts | <code>Object</code> | Properties for the updated <code>Subscription</code> object. See [RTM.subscribe(channelOrSubId, opts)](#subscribe) for the supported property names. |
 | [onCompleted] | <code>function</code> | function to execute on the updated <code>Subscription</code> object |
 
 <a name="RTM+unsubscribe"></a>
@@ -429,7 +428,7 @@ rtm.publish('channel', {key: 'value'}, function (pdu) {
 ```
 <a name="RTM+read(1)"></a>
 
-### RTM.read(channel, [onAck]) ⇒ <code>void</code>
+### RTM.read(channel, [onAckOrOpts]) ⇒ <code>void</code>
 Reads the latest message written to a specific channel, as a Protocol
 Data Unit (<strong>PDU</strong>). The client must be connected.
 
@@ -442,7 +441,7 @@ Data Unit (<strong>PDU</strong>). The client must be connected.
 | Param | Type | Description |
 | --- | --- | --- |
 | channel | <code>string</code> | name of the channel to read from |
-| [onAck] | <code>function</code> | Callback function that's invoked when RTM responds to the publish request. RTM passes the response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a response PDU. |
+| [onAckOrOpts] | <code>function</code> | Callback function that's invoked when RTM responds to the publish request. RTM passes the response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a response PDU. |
 
 **Example**  
 ```js
@@ -713,7 +712,7 @@ To get a role secret key for your application, go to the Dev Portal.
 | role | <code>string</code> |  | role name set in the Dev Portal |
 | roleSecret | <code>string</code> |  | role secret key |
 | opts | <code>object</code> |  | additional authentication options |
-| [opts.timeout] | <code>integer</code> | <code>30000</code> | amount of time, in milliseconds, before the authentication operation times out |
+| [opts.timeout] | <code>int</code> | <code>30000</code> | amount of time, in milliseconds, before the authentication operation times out |
 
 <a name="Subscription"></a>
 
@@ -722,14 +721,14 @@ To get a role secret key for your application, go to the Dev Portal.
 **Extends:** <code>[Observer](#Observer)</code>  
 
 * [Subscription](#Subscription) ⇐ <code>[Observer](#Observer)</code>
-    * [new Subscription(subscriptionId, opts)](#new_Subscription_new)
+    * [new Subscription(subscriptionId, _opts)](#new_Subscription_new)
     * [.on(name, fn)](#Observer+on) ⇒ <code>void</code>
     * [.off(name, fn)](#Observer+off) ⇒ <code>void</code>
     * [.fire(name, ...args)](#Observer+fire) ⇒ <code>void</code>
 
 <a name="new_Subscription_new"></a>
 
-### new Subscription(subscriptionId, opts)
+### new Subscription(subscriptionId, _opts)
 <code>Subscription</code> represents a subscription to a channel. Its functions manage the
 subscription state and respond to subscription events.
 
@@ -760,9 +759,9 @@ unsubscribed and then resubscribed when the connection is restored.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | subscriptionId | <code>string</code> |  | unique identifier for the subscription. If you don't use the <code>filter</code> parameter to specify a streamview, subscriptionId is treated as a channel name. |
-| opts | <code>Object</code> |  | additional subscription options |
-| [opts.mode] | <code>boolean</code> |  | subscription mode |
-| [opts.bodyOpts] | <code>object</code> | <code>{}</code> | Additional options for the subscription. These options are sent to RTM in the <code>body</code> element of the PDU that represents the subscribe request. The keys in <code>bodyOpts</code> are documented in the parameter list for [RTM.subscribe()](#RTM+subscribe) |
+| _opts | <code>Object</code> |  | additional subscription options |
+| [_opts.mode] | <code>boolean</code> |  | subscription mode |
+| [_opts.bodyOpts] | <code>object</code> | <code>{}</code> | Additional options for the subscription. These options are sent to RTM in the <code>body</code> element of the PDU that represents the subscribe request. The keys in <code>bodyOpts</code> are documented in the parameter list for [RTM.subscribe()](#RTM+subscribe) |
 
 **Example**  
 ```js
