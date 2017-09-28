@@ -400,9 +400,6 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  *
  * @param {object} [bodyOpts={}] - Contains additional options for the subscription
  *
- * @param {string} [bodyOpts.subscription_id] - Your identifier for the subscription.
- * If the subscription specifies a streamview, this parameter is required.
- *
  * @param {boolean} [bodyOpts.force=false] - Determines how RTM should act if the subscribe request
  * contains a <code>subscription_id</code> that already exists. If true, RTM re-subscribes or
  * creates a new subscription, depending on the specified subscription parameters. If false, RTM
