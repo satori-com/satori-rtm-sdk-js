@@ -84,10 +84,10 @@ var STATES = {};
  *
  * @param {object} opts - additional RTM client parameters
  *
- * @param {integer} [opts.minReconnectInterval=1000] - minimum
+ * @param {int} [opts.minReconnectInterval=1000] - minimum
  * time period, in milliseconds, to wait between reconnection attempts
  *
- * @param {integer} [opts.maxReconnectInterval=120000] - maximum
+ * @param {int} [opts.maxReconnectInterval=120000] - maximum
  * time period, in milliseconds, to wait between reconnection attempts
  *
  * @param {('json'|'cbor')} [opts.protocol='json'] - WebSocket protocol to use
@@ -98,17 +98,17 @@ var STATES = {};
  * @param {object} [opts.authProvider] - object that manages authentication for the client.
  * See {@link auth.js}
  *
- * @param {integer} [opts.heartbeatInterval=60000] - interval,
+ * @param {int} [opts.heartbeatInterval=60000] - interval,
  * in milliseconds, to wait between heartbeat messages
- * @param {integer} [opts.highWaterMark=4194304] - 4MB. High water mark in bytes. If the number
+ * @param {int} [opts.highWaterMark=4194304] - 4MB. High water mark in bytes. If the number
  * of bytes in the WebSocket write buffer exceeds this value,
  * [writeable]{@link RTM#writeable} is set to <code>false</code>.
  *
- * @param {integer} [opts.lowWaterMark=2097152] - 2MB. Low water mark, in bytes. If the
- * Websocket write buffer rises above <code>highWaterMark</code> and then drops below
+ * @param {int} [opts.lowWaterMark=2097152] - 2MB. Low water mark, in bytes. If the
+ * WebSocket write buffer rises above <code>highWaterMark</code> and then drops below
  * <code>lowWaterMark</code>, [writeable]{@link RTM#writeable} is set to <code>true</code>.
  *
- * @param {integer} [opts.checkWritabilityInterval=100] - Interval,
+ * @param {int} [opts.checkWritabilityInterval=100] - Interval,
  * in milliseconds, between checks of the queue length and updates of the
  * [writeable]{@link RTM#writeable} property if necessary.
  *
@@ -279,7 +279,7 @@ RTM.SubscriptionMode = {
  *
  * @param {object} opts - additional authentication options
  *
- * @param {integer} [opts.timeout=30000] - amount of time, in milliseconds, before the
+ * @param {int} [opts.timeout=30000] - amount of time, in milliseconds, before the
  * authentication operation times out
  *
  * @throws {TypeError} thrown if mandatory parameters are missing or invalid
@@ -386,21 +386,50 @@ RTM.prototype.getSubscription = function (subscriptionId) {
 /**
  * Creates a subscription to the specified channel.
  *
- * When you create a subscription, you can specify additional properties.
- * For example, you can add a streamview, or you can specify the
- * what the SDK does when it resubscribes after a reconnection.
+ * When you create a subscription, you can specify additional options in the
+ * <code>bodyOpts</code> parameter. For example, you can specify a streamview or specify what the
+ * SDK does when it resubscribes after a reconnection.
  *
- * @param {string} channelOrSubId - string containing a channel id or name. If you do not
- * specify the <code>filter</code> parameter, specify the channel name. Otherwise,
- * specify a unique identifier for your subscription to this channel.
+ * @param {string} channelOrSubId - Contains a channel name or a subscription id. If you don't
+ * specify the <code>filter</code> field in <code>bodyOpts</code>, specify the channel name.
+ * Otherwise, specify the channel name in the stream SQL in the <code>filter</code> field, and
+ * specify a subscription id in <code>channelOrSubId</code>.
  *
- * @param {RTM.SubscriptionMode} mode
- * subscription mode. This mode determines the behaviour of the RTM SDK and RTM when resubscribing
- * after a reconnection. See [SubscriptionMode]{@link SubscriptionMode}.
+ * @param {RTM.SubscriptionMode} mode - Contains flags that determine the resubscribe behavior of
+ * the RTM SDK and RTM. See [SubscriptionMode]{@link SubscriptionMode}.
  *
- * @param {object} [bodyOpts={}]
- * additional options for the subscription
+ * @param {object} [bodyOpts={}] - Contains additional options for the subscription
  *
+ * @param {boolean} [bodyOpts.force=false] - Determines how RTM should act if the subscribe request
+ * contains a <code>subscription_id</code> that already exists. If true, RTM re-subscribes or
+ * creates a new subscription, depending on the specified subscription parameters. If false, RTM
+ * returns an error.
+ *
+ * @param {int} [bodyOpts.position] - Position of a message in the channel. If you don't
+ * specify the <code>history</code> field, RTM uses this position as the next message position
+ * for the subscription. Otherwise, RTM interprets the value in <code>history</code> as an offset
+ * from the value of <code>position</code>.
+ *
+ * @param {object} [bodyOpts.history] - Object that contains history parameters.
+ *
+ * @param {int} [bodyOpts.history.count] - Offset from a message position, specified as a
+ * number of messages. RTM starts the subscription this many messages before the position that the
+ * subscription otherwise starts with. If you specify <code>bodyOpts.position</code>, RTM uses that
+ * position as the starting point for the offset. <strong>Note:</strong> If you specify
+ * <code>count</code>, you can't specify <code>age</code>.
+ *
+ * @param {int} [bodyOpts.history.age] - Offset from a message position, specified as a
+ * duration in seconds. RTM starts the subscription at the least recent message that's this
+ * many seconds older than the position that the subscription otherwise starts with. If you
+ * specify <code>bodyOpts.position</code>, RTM uses that position as the starting point for the
+ * offset. <strong>Note:</strong> If you specify <code>age</code>, you can't specify
+ * <code>count</code>.
+ *
+ * @param {string} [bodyOpts.filter] - Contains a stream SQL statement that selects,
+ * transforms, or aggregates messages in the specified channel
+ *
+ * @param {int} [bodyOpts.period] - Specifies a duration in seconds for each partition
+ * in an aggregate view. The maximum value is 60 (1 minute).
  *
  * @throws {TypeError} thrown if mandatory parameters are missing or invalid.
  *
@@ -495,7 +524,10 @@ RTM.prototype.subscribe = function (channelOrSubId, mode, bodyOpts) {
  * @param {string} channelOrSubId - subscription id or channel name for
  * the existing subscription
  *
- * @param {Object} opts
+ * @param {RTM.SubscriptionMode} mode - Contains flags that determine the resubscribe behavior of
+ * the RTM SDK and RTM. See [SubscriptionMode]{@link SubscriptionMode}.
+ *
+ * @param {Object} bodyOpts
  * Properties for the updated <code>Subscription</code> object. See
  * [RTM.subscribe(channelOrSubId, opts)]{@link #subscribe} for the supported property names.
  *
@@ -623,7 +655,7 @@ RTM.prototype.publish = function (channel, message, onAck) {
  *
  * @param {string} channel - name of the channel to read from
  *
- * @param {Function} [onAck]
+ * @param {Function} [onAckOrOpts]
  * Callback function that's invoked when RTM responds to the publish request. RTM passes the
  * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
  * response PDU.

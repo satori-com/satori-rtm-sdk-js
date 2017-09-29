@@ -52,13 +52,14 @@ var objectAssign = require('object-assign');
  * <code>filter</code> parameter to specify a streamview, subscriptionId is treated as a channel
  * name.
  *
- * @param {Object} opts - additional subscription options
+ * @param {Object} _opts - additional subscription options
  *
- * @param {boolean} [opts.mode] - subscription mode
+ * @param {boolean} [_opts.mode] - subscription mode
  *
- * @param {object} [opts.bodyOpts={}]
+ * @param {object} [_opts.bodyOpts={}]
  * Additional options for the subscription. These options are sent to RTM in the <code>body</code>
- * element of the PDU that represents the subscribe request.
+ * element of the PDU that represents the subscribe request. The keys in <code>bodyOpts</code> are
+ * documented in the parameter list for [RTM.subscribe()]{@link RTM#subscribe}
  *
  * @throws {TypeError} indicates that mandatory parameters are missing or invalid.
  *
