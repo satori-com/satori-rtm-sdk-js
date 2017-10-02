@@ -77,7 +77,7 @@ rtm.start();
 Documentation
 ---------------------------------------------------------------------
 
-You can view the latest JavaScript SDK documentation [here](https://github.com/satori-com/satori-rtm-sdk-js/blob/v1.1.1/API.md).
+You can view the latest JavaScript SDK documentation [here](https://satori-com.github.io/satori-rtm-sdk-js/).
 
 #### Generating API docs
 

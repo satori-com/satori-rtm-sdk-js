@@ -61,14 +61,6 @@ gulp.task('docs', function (cb) {
     .pipe(jsdoc(config, cb));
 });
 
-gulp.task('apimd', function () {
-  return jsdoc2md
-    .render({ files: 'src/*.js' })
-    .then(function (output) {
-      fs.writeFileSync('API.md', output.replace(/rtM/g, 'RTM'));
-    });
-});
-
 function applyVersion(str) {
   var pack = require('./package.json');
 

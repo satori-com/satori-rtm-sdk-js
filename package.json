@@ -8,7 +8,6 @@
   },
   "files": [
     "dist",
-    "API.md",
     "gulpfile.js",
     "src"
   ],
@@ -22,7 +21,7 @@
   "scripts": {
     "deploy": "gulp deploy",
     "build": "gulp build",
-    "docs": "gulp docs && gulp apimd",
+    "docs": "gulp docs",
     "test": "jest",
     "preversion": "npm test",
     "version": "npm run build && npm run docs",
