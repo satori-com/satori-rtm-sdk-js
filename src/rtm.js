@@ -395,9 +395,8 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * <code>bodyOpts</code> parameter. For example, you can specify a streamview or specify what the
  * SDK does when it resubscribes after a reconnection.
  *
- * The callback function you specify for the subscription receives PDUs in the same format as the
- * protocol you specify in the client constructor {@link RTM}. RTM automatically converts
- * messages before it sends them.
+ * The callback function you specify for the subscription always receives PDUs in the form of
+ * JavaScript objects.
  *
  * @param {string} channelOrSubId - Contains a channel name or a subscription id. If you don't
  * specify the <code>filter</code> field in <code>bodyOpts</code>, specify the channel name.
