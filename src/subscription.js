@@ -24,7 +24,7 @@ var objectAssign = require('object-assign');
  * <code>Subscription.on("rtm/subscription/data", fn())</code>.
  *
  * The format of the PDU in messages you receive is the same as the
- * protocol you specify in the client constructor {@link RTM}. RTM automatically converts
+ * subprotocol you specify in the client constructor {@link RTM}. RTM automatically converts
  * messages before it sends them.
  *
  * You can also specify an event handler function that executes when the subscription enters or

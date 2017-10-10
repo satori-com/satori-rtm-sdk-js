@@ -90,13 +90,13 @@ var STATES = {};
  * @param {int} [opts.maxReconnectInterval=120000] - maximum
  * time period, in milliseconds, to wait between reconnection attempts
  *
- * @param {('json'|'cbor')} [opts.protocol='json'] - WebSocket protocol to use
+ * @param {('json'|'cbor')} [opts.protocol='json'] - WebSocket subprotocol to use
  * <br>
- * The SDK automatically converts messages to the protocol you choose. For example, if you
+ * The SDK automatically converts messages to the subprotocol you choose. For example, if you
  * specify <code>opts.protocol = 'cbor'</code> and then publish a JSON object, the SDK converts it
  * to CBOR.
  * <br>
- * If you don't specify a protocol, RTM defaults to JSON protocol.
+ * If you don't specify a subprotocol, RTM defaults to JSON subprotocol.
  * @param {boolean} [opts.heartbeatEnabled=true] - enables periodic
  * heartbeat monitoring for the WebSocket connection
  *
@@ -634,7 +634,7 @@ RTM.prototype.unsubscribe = function (subscriptionId, onAck) {
  * <br>
  * JSON object or binary data containing the message to publish
  * <br>
- * The type you choose is independent of the protocol you're using for your client. The SDK
+ * The type you choose is independent of the subprotocol you're using for your client. The SDK
  * automatically converts the message to the correct format before sending it to RTM.
  *
  * @param {Function} [onAck]
@@ -669,7 +669,7 @@ RTM.prototype.publish = function (channel, message, onAck) {
  * Data Unit (<strong>PDU</strong>). The client must be connected.
  *
  * The callback function you specify receives a PDU in the same format as the
- * protocol you specify in the client constructor {@link RTM}. RTM automatically converts
+ * subprotocol you specify in the client constructor {@link RTM}. RTM automatically converts
  * messages.
  *
  * @variation 1
@@ -755,7 +755,7 @@ RTM.prototype.read = function (channel, onAckOrOpts) {
  * <br>
  * JSON object or binary data containing the message to write
  * <br>
- * The type you choose is independent of the protocol you're using for your client. The SDK
+ * The type you choose is independent of the subprotocol you're using for your client. The SDK
  * automatically converts the message to the correct format before sending it to RTM.
  *
  * @param {Function} [onAck]

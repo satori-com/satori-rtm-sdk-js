@@ -103,8 +103,8 @@ The assembled JS output will appear in the `./dist/` directory.
 
 Binary data support
 ---------------------------------------------------------------------
-RTM supports CBOR protocol to work with binary data. Binary data is
-represented as `Uint8Array`.
+RTM supports the CBOR subprotocol to work with binary data. Binary data
+is represented as `Uint8Array`.
 
 <details>
 <summary>An example to work with binary data:</summary>
