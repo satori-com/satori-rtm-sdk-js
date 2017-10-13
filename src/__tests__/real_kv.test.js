@@ -122,36 +122,4 @@ describe('real key-value storage', function () {
 
     rtm.start();
   });
-
-  xit('searches channels', function (done) {
-    var rtm = h.rtm();
-    var channels = [];
-
-    var initNChannels = function (n, completeFn) {
-      var idx = n;
-      if (n >= 0) {
-        rtm.write(channel + idx, 'foo', function () {
-          initNChannels(n - 1, completeFn);
-        });
-      } else {
-        completeFn();
-      }
-    };
-
-
-    rtm.on('enter-connected', function () {
-      initNChannels(10, function () {
-        rtm.search(channel, function (pdu) {
-          channels = channels.concat(pdu.body.channels);
-          expect(pdu.action).not.toBe('rtm/search/error');
-          if (pdu.action === 'rtm/search/ok') {
-            expect(channels.indexOf(channel + '5')).not.toBe(-1);
-            done();
-          }
-        });
-      });
-    });
-
-    rtm.start();
-  });
 });

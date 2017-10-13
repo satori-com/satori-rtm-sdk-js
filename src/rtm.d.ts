@@ -55,7 +55,6 @@ declare class RTM implements Observer {
   read(channel: string, options?: ReadOptions): void;
   write(channel: string, value: any, onAck?: OnAck): void;
   delete(channel: string, onAck?: OnAck): void;
-  search(channel: string, onAck?: OnAck): void;
 
   on(event: string, handler: OnEvent): void;
   off(event: string, handler: OnEvent): void;
