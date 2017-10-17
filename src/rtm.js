@@ -90,8 +90,13 @@ var STATES = {};
  * @param {int} [opts.maxReconnectInterval=120000] - maximum
  * time period, in milliseconds, to wait between reconnection attempts
  *
- * @param {('json'|'cbor')} [opts.protocol='json'] - WebSocket protocol to use
- *
+ * @param {('json'|'cbor')} [opts.protocol='json'] - WebSocket subprotocol to use
+ * <br>
+ * The SDK automatically converts messages to the subprotocol you choose. For example, if you
+ * specify <code>opts.protocol = 'cbor'</code> and then publish a JSON object, the SDK converts it
+ * to CBOR.
+ * <br>
+ * If you don't specify a subprotocol, RTM defaults to JSON subprotocol.
  * @param {boolean} [opts.heartbeatEnabled=true] - enables periodic
  * heartbeat monitoring for the WebSocket connection
  *
@@ -390,6 +395,9 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * <code>bodyOpts</code> parameter. For example, you can specify a streamview or specify what the
  * SDK does when it resubscribes after a reconnection.
  *
+ * The callback function you specify for the subscription always receives PDUs in the form of
+ * JavaScript objects.
+ *
  * @param {string} channelOrSubId - Contains a channel name or a subscription id. If you don't
  * specify the <code>filter</code> field in <code>bodyOpts</code>, specify the channel name.
  * Otherwise, specify the channel name in the stream SQL in the <code>filter</code> field, and
@@ -404,6 +412,11 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * contains a <code>subscription_id</code> that already exists. If true, RTM re-subscribes or
  * creates a new subscription, depending on the specified subscription parameters. If false, RTM
  * returns an error.
+ *
+ * @param {boolean} [bodyOpts.fast_forward=false] - Determines how RTM should act if it detects
+ * that the next message position for the subscription is pointing to an expired message (out of
+ * sync condition). If true, RTM moves the next message position to the least recent un-expired
+ * message in the channel. If false, RTM returns an error and terminates the subscription.
  *
  * @param {int} [bodyOpts.position] - Position of a message in the channel. If you don't
  * specify the <code>history</code> field, RTM uses this position as the next message position
@@ -617,8 +630,12 @@ RTM.prototype.unsubscribe = function (subscriptionId, onAck) {
  *
  * @param {string} channel - channel name
  *
- * @param {JSON} message
- * JSON containing the message to publish
+ * @param {JSON | Uint8Array} message
+ * <br>
+ * JSON object or binary data containing the message to publish
+ * <br>
+ * The type you choose is independent of the subprotocol you're using for your client. The SDK
+ * automatically converts the message to the correct format before sending it to RTM.
  *
  * @param {Function} [onAck]
  * Callback function that's invoked when RTM responds to the publish request. RTM passes the
@@ -651,12 +668,16 @@ RTM.prototype.publish = function (channel, message, onAck) {
  * Reads the latest message written to a specific channel, as a Protocol
  * Data Unit (<strong>PDU</strong>). The client must be connected.
  *
+ * The callback function you specify receives a PDU in the same format as the
+ * subprotocol you specify in the client constructor {@link RTM}. RTM automatically converts
+ * messages.
+ *
  * @variation 1
  *
  * @param {string} channel - name of the channel to read from
  *
  * @param {Function} [onAckOrOpts]
- * Callback function that's invoked when RTM responds to the publish request. RTM passes the
+ * Callback function that's invoked when RTM responds to the read request. RTM passes the
  * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
  * response PDU.
  *
@@ -688,7 +709,7 @@ RTM.prototype.publish = function (channel, message, onAck) {
  * RTM in the request.
  *
  * @param {Function} [opts.onAck]
- * Callback function that's invoked when RTM responds to the publish request. RTM passes the
+ * Callback function that's invoked when RTM responds to the read request. RTM passes the
  * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
  * response PDU.
  *
@@ -730,8 +751,12 @@ RTM.prototype.read = function (channel, onAckOrOpts) {
  *
  * @param {string} channel - name of the channel to write to
  *
- * @param {JSON} value
- * JSON containing the PDU to write to the channel
+ * @param {JSON | Uint8Array} value
+ * <br>
+ * JSON object or binary data containing the message to write
+ * <br>
+ * The type you choose is independent of the subprotocol you're using for your client. The SDK
+ * automatically converts the message to the correct format before sending it to RTM.
  *
  * @param {Function} [onAck]
  * Callback function that's invoked when RTM responds to the publish request. RTM passes the

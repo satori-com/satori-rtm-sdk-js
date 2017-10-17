@@ -23,6 +23,10 @@ var objectAssign = require('object-assign');
  * message is passed as a Protocol Data Unit (<strong>PDU</strong>) to the function specified for
  * <code>Subscription.on("rtm/subscription/data", fn())</code>.
  *
+ * The format of the PDU in messages you receive is the same as the
+ * subprotocol you specify in the client constructor {@link RTM}. RTM automatically converts
+ * messages before it sends them.
+ *
  * You can also specify an event handler function that executes when the subscription enters or
  * leaves subscribed state. For example, to specify an event handler for the
  * <code>enter-subscribed</code> event, use <code>Subscription.on("enter-subscribed", fn()}</code>.
