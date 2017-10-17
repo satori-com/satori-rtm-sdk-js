@@ -819,51 +819,6 @@ RTM.prototype.delete = function (channel, onAck) {
   return this._send(command, onAck);
 };
 
-/**
- * Performs a channel search for a given user-defined prefix. This method passes
- * replies to the callback. The [RTM]{@link RTM} client must be connected.
- *
- * RTM may send multiple responses to the same search request: zero or
- * more search result PDUs with an action of <code>rtm/search/data</code>
- * (depending on the results of the search). Each channel found is only sent
- * once. After the search result PDUs, RTM follows with a positive response PDU:
- * <code>rtm/search/ok</code>.
- *
- * Otherwise, RTM sends an error PDU with an action of <code>rtm/search/error</code>.
- *
- * @param {string} prefix - Channel prefix.
- *
- * @param {Function} [onAck]
- * Function to attach and execute on the response PDU from
- * RTM. The response PDU is passed as a parameter to this function.
- * RTM does not send a response PDU if a callback is not specified.
- *
- * @example
- * var channels = [];
- * rtm.search('ch', function (pdu) {
- *     channels = channels.concat(pdu.body.channels);
- *     if (pdu.action === 'rtm/search/ok') {
- *       console.log(channels);
- *     }
- * })
- *
- * @throws {TypeError} <code>TypeError</code> indicates that mandatory
- * parameters are missing or invalid.
- *
- * @return {void}
- */
-RTM.prototype.search = function (prefix, onAck) {
-  var command;
-  if (typeof prefix !== 'string') {
-    throw new TypeError('"prefix" is missing or invalid');
-  }
-  command = {
-    action: 'rtm/search',
-    body: { prefix: prefix },
-  };
-  return this._send(command, onAck);
-};
-
 // Private methods
 
 RTM.prototype._initHeartbeatInterval = function () {
