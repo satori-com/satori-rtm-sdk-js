@@ -1,6 +1,7 @@
-Unreleased
+v1.2.0 (2017-11-14)
 -------------------
 * Add CBOR support
+* Remove unused search API
 
 v1.1.1 (2017-08-29)
 -------------------
