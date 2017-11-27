@@ -190,4 +190,33 @@ describe('real subscription', function () {
 
     rtm.start();
   });
+
+  it('subscribes with value_changes flag', function (done) {
+    var rtm = h.rtm();
+
+    var bodyOpts = {
+      'only': 'value_changes'
+    }
+    var s = rtm.subscribe(subscriptionId, RTM.SubscriptionMode.RELIABLE, bodyOpts);
+    s.on('rtm/subscription/data', function (pdu) {
+      pdu.body.messages.forEach(p.doCheck);
+    });
+
+    rtm.on('enter-connected', function () {
+      rtm.publish(subscriptionId, { foo: 'bar' });
+      rtm.publish(subscriptionId, { foo: 'bar' });
+      rtm.publish(subscriptionId, { bar: 'foo' });
+      rtm.publish(subscriptionId, { bar: 'foo' });
+    });
+
+    p.addCheck(function (msg) {
+      expect(msg).toEqual({ foo: 'bar' });
+    });
+    p.addCheck(function (msg) {
+      expect(msg).toEqual({ bar: 'foo' });
+    });
+    p.whenCompleted(done);
+
+    rtm.start();
+  });
 });
