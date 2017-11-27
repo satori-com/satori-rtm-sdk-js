@@ -195,8 +195,8 @@ describe('real subscription', function () {
     var rtm = h.rtm();
 
     var bodyOpts = {
-      'only': 'value_changes'
-    }
+      only: 'value_changes',
+    };
     var s = rtm.subscribe(subscriptionId, RTM.SubscriptionMode.RELIABLE, bodyOpts);
     s.on('rtm/subscription/data', function (pdu) {
       pdu.body.messages.forEach(p.doCheck);
