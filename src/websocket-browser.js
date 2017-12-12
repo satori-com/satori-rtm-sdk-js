@@ -1,5 +1,5 @@
 var _global = (function () {
-  return this;
+  return this || (1,eval)('this'); // eslint-disable-line
 }());
 var NativeWebSocket = _global.WebSocket || _global.MozWebSocket;
 
