@@ -1,3 +1,7 @@
+v1.2.1 (2017-12-13)
+-------------------
+* Fixed _global function to return a correct reference to window in "strict mode"
+
 v1.2.0 (2017-11-14)
 -------------------
 * Add CBOR support

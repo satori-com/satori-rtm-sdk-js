@@ -12,7 +12,7 @@ JavaScript SDK Installation
 To use the JavaScript SDK from a browser-based application, include the SDK from the CDN and create an RTM client instance:
 
 ```HTML
-<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.2.0/sdk.min.js"></script>
+<script src="https://satori-a.akamaihd.net/satori-rtm-sdk/v1.2.1/sdk.min.js"></script>
 ```
 and then
 
