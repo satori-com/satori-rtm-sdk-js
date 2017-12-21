@@ -107,15 +107,15 @@ var STATES = {};
  * in milliseconds, to wait between heartbeat messages
  * @param {int} [opts.highWaterMark=4194304] - 4MB. High water mark in bytes. If the number
  * of bytes in the WebSocket write buffer exceeds this value,
- * [writeable]{@link RTM#writeable} is set to <code>false</code>.
+ * [writable]{@link RTM#writable} is set to <code>false</code>.
  *
  * @param {int} [opts.lowWaterMark=2097152] - 2MB. Low water mark, in bytes. If the
  * WebSocket write buffer rises above <code>highWaterMark</code> and then drops below
- * <code>lowWaterMark</code>, [writeable]{@link RTM#writeable} is set to <code>true</code>.
+ * <code>lowWaterMark</code>, [writable]{@link RTM#writable} is set to <code>true</code>.
  *
  * @param {int} [opts.checkWritabilityInterval=100] - Interval,
  * in milliseconds, between checks of the queue length and updates of the
- * [writeable]{@link RTM#writeable} property if necessary.
+ * [writable]{@link RTM#writable} property if necessary.
  *
  * @param {object} [opts.proxyAgent] - proxy server agent.
  * A custom http.Agent implementation like:
@@ -418,10 +418,14 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * sync condition). If true, RTM moves the next message position to the least recent un-expired
  * message in the channel. If false, RTM returns an error and terminates the subscription.
  *
- * @param {int} [bodyOpts.position] - Position of a message in the channel. If you don't
- * specify the <code>history</code> field, RTM uses this position as the next message position
- * for the subscription. Otherwise, RTM interprets the value in <code>history</code> as an offset
- * from the value of <code>position</code>.
+ * @param {string} [bodyOpts.position] - Position of a message in the channel.
+ *
+ * Only use a value received from RTM in a response or subscription data message.
+ * <strong>Don't</strong> calculate a value or make up an arbitrary value.
+ *
+ * If you don't specify the <code>history</code> field, RTM uses this position as the next
+ * message position for the subscription. Otherwise, RTM interprets the value in
+ * <code>history</code> as an offset from the value of <code>position</code>.
  *
  * @param {object} [bodyOpts.history] - Object that contains history parameters.
  *
@@ -666,7 +670,10 @@ RTM.prototype.publish = function (channel, message, onAck) {
 
 /**
  * Reads the latest message written to a specific channel, as a Protocol
- * Data Unit (<strong>PDU</strong>). The client must be connected.
+ * Data Unit (<strong>PDU</strong>).
+ *
+ * <strong>Note:</strong> Ensure that you're connected to RTM before calling this method. To do
+ * this, call [RTM.isConnected(){@link RTM#isConnected}.
  *
  * The callback function you specify receives a PDU in the same format as the
  * subprotocol you specify in the client constructor {@link RTM}. RTM automatically converts
@@ -714,11 +721,16 @@ RTM.prototype.publish = function (channel, message, onAck) {
  * response PDU.
  *
  * @example
- * // Reads from the channel named 'channel', starting at the position specified by the
- * // "position" key.
- * // Prints the response PDU.
+ * // Publishes a message to a channel, then reads the message from the channel based on
+ * // its position.
+ * var somePosition;
+ * rtm.publish('channel', {key: 'value'}, function (pdu) {
+ *     if (pdu.action.endsWith('/ok')) {
+ *         somePosition = pdu.body.position
+ *     }
+ * })
  * rtm.read('channel', {
- *   bodyOpts: { position: '1485444476:0' },
+ *   bodyOpts: { position: somePosition },
  *   onAck: function (pdu) {
  *     console.log(pdu);
  *   }
