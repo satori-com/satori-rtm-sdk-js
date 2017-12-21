@@ -709,7 +709,8 @@ RTM.prototype.publish = function (channel, message, onAck) {
  *
  * @param {object} [opts={}]
  * Additional options in the read PDU that's sent to RTM in the request.
- * For more information, see the section "Read PDU" in the "RTM API" chapter of <em>Satori Docs/em>.
+ * For more information, see the section "Read PDU" in the "RTM API" chapter of
+ * <em>Satori Docs</em>.
  *
  * @param {object} [opts.bodyOpts={}]
  * Additional options in the <code>body</code> element of the read PDU that's sent to
@@ -759,7 +760,10 @@ RTM.prototype.read = function (channel, onAckOrOpts) {
 };
 
 /**
- * Writes a value to the specified channel. The client must be connected.
+ * Writes a value to the specified channel.
+ *
+ * <strong>Note:</strong> Ensure that you're connected to RTM before calling this method. To do
+ * this, call [RTM.isConnected(){@link RTM#isConnected}.
  *
  * @param {string} channel - name of the channel to write to
  *
