@@ -483,7 +483,7 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  *   if (pdu.action.endsWith('/error')) {
  *     rtm.restart();
  *   }
- *
+ * });
  * rtm.start();
  *
  * @see {@link RTM.SubscriptionMode.SIMPLE}
