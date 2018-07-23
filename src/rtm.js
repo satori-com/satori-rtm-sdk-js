@@ -107,15 +107,15 @@ var STATES = {};
  * in milliseconds, to wait between heartbeat messages
  * @param {int} [opts.highWaterMark=4194304] - 4MB. High water mark in bytes. If the number
  * of bytes in the WebSocket write buffer exceeds this value,
- * [writeable]{@link RTM#writeable} is set to <code>false</code>.
+ * [writable]{@link RTM#writable} is set to <code>false</code>.
  *
  * @param {int} [opts.lowWaterMark=2097152] - 2MB. Low water mark, in bytes. If the
  * WebSocket write buffer rises above <code>highWaterMark</code> and then drops below
- * <code>lowWaterMark</code>, [writeable]{@link RTM#writeable} is set to <code>true</code>.
+ * <code>lowWaterMark</code>, [writable]{@link RTM#writable} is set to <code>true</code>.
  *
  * @param {int} [opts.checkWritabilityInterval=100] - Interval,
  * in milliseconds, between checks of the queue length and updates of the
- * [writeable]{@link RTM#writeable} property if necessary.
+ * [writable]{@link RTM#writable} property if necessary.
  *
  * @param {object} [opts.proxyAgent] - proxy server agent.
  * A custom http.Agent implementation like:
@@ -418,10 +418,14 @@ RTM.prototype.getSubscription = function (subscriptionId) {
  * sync condition). If true, RTM moves the next message position to the least recent un-expired
  * message in the channel. If false, RTM returns an error and terminates the subscription.
  *
- * @param {int} [bodyOpts.position] - Position of a message in the channel. If you don't
- * specify the <code>history</code> field, RTM uses this position as the next message position
- * for the subscription. Otherwise, RTM interprets the value in <code>history</code> as an offset
- * from the value of <code>position</code>.
+ * @param {string} [bodyOpts.position] - Position of a message in the channel.
+ *
+ * Only use a value received from RTM in a response or subscription data message.
+ * <strong>Don't</strong> calculate a value or make up an arbitrary value.
+ *
+ * If you don't specify the <code>history</code> field, RTM uses this position as the next
+ * message position for the subscription. Otherwise, RTM interprets the value in
+ * <code>history</code> as an offset from the value of <code>position</code>.
  *
  * @param {object} [bodyOpts.history] - Object that contains history parameters.
  *
@@ -666,63 +670,69 @@ RTM.prototype.publish = function (channel, message, onAck) {
 
 /**
  * Reads the latest message written to a specific channel, as a Protocol
- * Data Unit (<strong>PDU</strong>). The client must be connected.
+ * Data Unit (<strong>PDU</strong>). To learn more about read PDUs, see the section
+ * [Read PDU]{@link https://www.satori.com/docs/using-satori/rtm-api#read-pdu} in the
+ * [Satori Docs]{@link https://www.satori.com/docs/introduction/new-to-satori}.
  *
- * The callback function you specify receives a PDU in the same format as the
- * subprotocol you specify in the client constructor {@link RTM}. RTM automatically converts
- * messages.
+ * <strong>Note:</strong> Ensure that you're connected to RTM before calling this method. To do
+ * this, call [RTM.isConnected()]{@link RTM#isConnected}.
  *
- * @variation 1
+ * @param {string} channel - Name of the channel to read from
  *
- * @param {string} channel - name of the channel to read from
+ * @param {Function | Object} onAckOrOpts - Callback function, or options, or both:
+ * <ol>
+ *     <li>
+ *         If the parameter is a function or function reference, the SDK interprets it as
+ *         a callback function that's invoked when RTM responds to the read request.  It receives
+ *         an RTM read response PDU in the same format as the subprotocol you specify in the client
+ *         constructor {@link RTM}.
+ *     </li>
+ *     <li>
+ *          If the parameter is a JavaScript object, it can contain the following top-level keys:
+ *          <ul>
+ *            <li>
+ *                <code>bodyOpts</code> - An object that contains key-value pairs that specify
+ *                read options. For a list of the options, see the section "Read PDU" in the
+ *                "RTM API" chapter of <em>Satori Docs</em>.
+ *            </li>
+ *            <li>
+ *                <code>onAck</code> - A callback function or function reference that's invoked
+ *                when RTM responds to the read request. It receives
+ *                an RTM read response PDU PDU in the same format as the subprotocol you specify
+ *                in the client constructor {@link RTM}.
+ *            </li>
+ *     </li>
+ * </ol>
  *
- * @param {Function} [onAckOrOpts]
- * Callback function that's invoked when RTM responds to the read request. RTM passes the
- * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
- * response PDU.
+ * For example, this is a valid object:
+ *
+ * <pre><code>{
+ *     onAck: function(pdu) {
+ *         console.log(pdu)
+ *     },
+ *     bodyOpts: {
+ *         { position : somePosition }
+ *     }
+ * }</code></pre>
  *
  * @example
- * // Reads from the channel named 'channel' and prints the response PDU
- * rtm.read('channel', function (pdu) {
- *     console.log(pdu);
+ * // Publishes a message to a channel, then reads the message from the channel based on
+ * // its position.
+ *
+ * var somePosition;
+ * rtm.publish('channel', {key: 'value'}, function (pdu) {
+ *     if (pdu.action.endsWith('/ok')) {
+ *         somePosition = pdu.body.position
+ *     }
  * })
- *
- * @throws {TypeError} thrown if required parameters are missing or invalid
- *
- * @return {void}
- *
- * @also
- *
- * Reads the latest message written to specific channel, as a Protocol
- * Data Unit (<strong>PDU</strong>). The client must be connected.
- *
- * @variation 2
- *
- * @param {string} channel - name of the channel to read from
- *
- * @param {object} [opts={}]
- * Additional options in the read PDU that's sent to RTM in the request.
- * For more information, see the section "Read PDU" in the "RTM API" chapter of <em>Satori Docs/em>.
- *
- * @param {object} [opts.bodyOpts={}]
- * Additional options in the <code>body</code> element of the read PDU that's sent to
- * RTM in the request.
- *
- * @param {Function} [opts.onAck]
- * Callback function that's invoked when RTM responds to the read request. RTM passes the
- * response PDU to this function. If you don't specify <code>onAck</code>, RTM doesn't send a
- * response PDU.
- *
- * @example
- * // Reads from the channel named 'channel', starting at the position specified by the
- * // "position" key.
- * // Prints the response PDU.
- * rtm.read('channel', {
- *   bodyOpts: { position: '1485444476:0' },
- *   onAck: function (pdu) {
- *     console.log(pdu);
+ * rtm.read('channel',
+ *   {
+ *      bodyOpts: { position: somePosition},
+ *      onAck: function (pdu) {
+ *        console.log(pdu)
+ *      }
  *   }
- * })
+ * );
  *
  * @throws {TypeError} thrown if required parameters are missing or invalid
  *
@@ -747,7 +757,10 @@ RTM.prototype.read = function (channel, onAckOrOpts) {
 };
 
 /**
- * Writes a value to the specified channel. The client must be connected.
+ * Writes a value to the specified channel.
+ *
+ * <strong>Note:</strong> Ensure that you're connected to RTM before calling this method. To do
+ * this, call [RTM.isConnected(){@link RTM#isConnected}.
  *
  * @param {string} channel - name of the channel to write to
  *
